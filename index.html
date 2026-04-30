@@ -3,1061 +3,511 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OA Business Development Command Center</title>
+<title>OA BD Command Center</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
-  :root {
-    --bg: #0a0e1a;
-    --card: #111827;
-    --card2: #162032;
-    --border: #1e2d42;
-    --cyan: #00d4ff;
-    --cyan-dim: #0099bb;
-    --green: #00e676;
-    --red: #ff4444;
-    --yellow: #ffc107;
-    --purple: #a855f7;
-    --text: #e2e8f0;
-    --muted: #64748b;
-    --hot: #ff4757;
-    --warm: #ffa502;
-    --cold: #00d4ff;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Segoe UI', system-ui, sans-serif;
-    font-size: 14px;
-    min-height: 100vh;
-  }
+:root {
+  --bg:#0a0e1a; --surface:#111827; --surface2:#162032; --border:#1e2d42;
+  --cyan:#00d4ff; --green:#00e676; --red:#ff4444; --yellow:#ffc107;
+  --purple:#a855f7; --hot:#ff4757; --warm:#ffa502; --cold:#00d4ff;
+  --text:#e2e8f0; --muted:#64748b; --radius:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px}
 
-  /* ── HEADER ── */
-  .header {
-    background: linear-gradient(135deg, #0d1b2e 0%, #0a0e1a 60%, #0d1f0d 100%);
-    border-bottom: 1px solid var(--border);
-    padding: 20px 28px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-  .header-left h1 {
-    font-size: 22px;
-    font-weight: 700;
-    color: #fff;
-    letter-spacing: -0.3px;
-  }
-  .header-left h1 span { color: var(--cyan); }
-  .header-left p { color: var(--muted); font-size: 12px; margin-top: 2px; }
-  .header-right {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-  .status-badge {
-    background: #0d2e1a;
-    border: 1px solid #00e676;
-    color: #00e676;
-    font-size: 11px;
-    font-weight: 600;
-    padding: 4px 10px;
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-  .status-badge::before {
-    content: '';
-    width: 6px; height: 6px;
-    background: #00e676;
-    border-radius: 50%;
-    animation: pulse 2s infinite;
-  }
-  @keyframes pulse {
-    0%,100%{opacity:1} 50%{opacity:0.3}
-  }
-  .last-updated { color: var(--muted); font-size: 11px; }
+/* HEADER */
+.hdr{background:linear-gradient(135deg,#0d1b2e,#0a0e1a 60%,#0d1f0d);border-bottom:1px solid var(--border);padding:18px 28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.hdr h1{font-size:20px;font-weight:700;color:#fff;letter-spacing:-.3px}
+.hdr h1 span{color:var(--cyan)}
+.hdr p{color:var(--muted);font-size:11px;margin-top:2px}
+.badge{background:#0d2e1a;border:1px solid var(--green);color:var(--green);font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;display:flex;align-items:center;gap:5px}
+.badge::before{content:'';width:6px;height:6px;background:var(--green);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.ts{color:var(--muted);font-size:11px}
 
-  /* ── LAYOUT ── */
-  .main { padding: 20px 28px; max-width: 1600px; margin: 0 auto; }
+/* LAYOUT */
+.main{padding:20px 28px;max-width:1600px;margin:0 auto}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px}
+.mb{margin-bottom:16px}
 
-  /* ── KPI BAR ── */
-  .kpi-bar {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 12px;
-    margin-bottom: 20px;
-  }
-  .kpi {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 14px 16px;
-    position: relative;
-    overflow: hidden;
-  }
-  .kpi::after {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    background: var(--accent, var(--cyan));
-  }
-  .kpi-label { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
-  .kpi-value { font-size: 28px; font-weight: 700; color: #fff; line-height: 1.1; margin: 4px 0 2px; }
-  .kpi-sub { color: var(--muted); font-size: 11px; }
-  .kpi-trend { font-size: 11px; margin-top: 2px; }
-  .up { color: var(--green); }
-  .down { color: var(--red); }
+/* KPI BAR */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:12px;margin-bottom:16px}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;position:relative;overflow:hidden}
+.kpi::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--ac,var(--cyan))}
+.kpi-l{color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px}
+.kpi-v{font-size:26px;font-weight:700;color:#fff;line-height:1.1;margin:4px 0 2px}
+.kpi-s{color:var(--muted);font-size:11px}
+.kpi-t{font-size:11px;margin-top:2px}
+.up{color:var(--green)}.down{color:var(--red)}
 
-  /* ── SECTION TITLE ── */
-  .section-title {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--cyan);
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .section-title::before {
-    content: '';
-    display: inline-block;
-    width: 3px; height: 14px;
-    background: var(--cyan);
-    border-radius: 2px;
-  }
+/* CARD */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px}
+.sec{font-size:12px;font-weight:600;color:var(--cyan);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px;display:flex;align-items:center;gap:7px}
+.sec::before{content:'';display:inline-block;width:3px;height:13px;background:var(--cyan);border-radius:2px}
 
-  /* ── GRID LAYOUTS ── */
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-  .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-  .grid-12 { display: grid; grid-template-columns: 1fr 2fr; gap: 16px; margin-bottom: 16px; }
-  .grid-21 { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 16px; }
+/* ATTENDANCE */
+.att-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.att-box{background:var(--surface2);border-radius:8px;padding:13px}
+.att-lbl{font-size:10px;color:var(--muted);margin-bottom:5px}
+.att-rate{font-size:30px;font-weight:700;color:#fff}
+.att-bar-bg{margin:7px 0;height:5px;background:#1e2d42;border-radius:3px;overflow:hidden}
+.att-bar{height:100%;border-radius:3px;transition:width 1s ease}
+.att-stats{display:flex;gap:10px;font-size:11px;flex-wrap:wrap}
+.att-stat span:first-child{color:var(--muted)}
+.att-stat span:last-child{color:#fff;font-weight:600;margin-left:3px}
 
-  /* ── CARD ── */
-  .card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 18px;
-  }
-  .card-title {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text);
-    margin-bottom: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .card-badge {
-    font-size: 10px;
-    font-weight: 600;
-    padding: 2px 8px;
-    border-radius: 10px;
-    background: #1e2d42;
-    color: var(--muted);
-  }
+/* FUNNEL */
+.funnel{display:flex;flex-direction:column;gap:5px}
+.fs{display:flex;align-items:center;gap:9px}
+.fl{width:135px;font-size:11px;color:var(--muted);text-align:right;flex-shrink:0}
+.fb{flex:1;height:26px;background:#1e2d42;border-radius:4px;overflow:hidden;position:relative}
+.fb-inner{height:100%;border-radius:4px;transition:width 1.2s ease;position:relative}
+.fb-pct{position:absolute;left:7px;top:50%;transform:translateY(-50%);font-size:10px;font-weight:700;color:#fff}
+.fb-n{position:absolute;right:7px;top:50%;transform:translateY(-50%);font-size:11px;font-weight:700;color:#fff}
 
-  /* ── ATTENDANCE METERS ── */
-  .attendance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  .attendance-item { background: var(--card2); border-radius: 10px; padding: 14px; }
-  .att-label { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
-  .att-rate { font-size: 32px; font-weight: 700; color: #fff; }
-  .att-bar-wrap { margin: 8px 0; height: 6px; background: #1e2d42; border-radius: 3px; overflow: hidden; }
-  .att-bar { height: 100%; border-radius: 3px; transition: width 1s ease; }
-  .att-stats { display: flex; gap: 12px; font-size: 11px; }
-  .att-stat span:first-child { color: var(--muted); }
-  .att-stat span:last-child { color: #fff; font-weight: 600; margin-left: 3px; }
+/* CONVERSION FLOW */
+.conv-flow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.cs{flex:1;min-width:72px;background:var(--surface2);border-radius:8px;padding:11px 8px;text-align:center}
+.cs-n{font-size:20px;font-weight:700;color:#fff}
+.cs-l{font-size:10px;color:var(--muted);margin-top:2px}
+.ca{color:var(--muted);font-size:16px;flex-shrink:0;text-align:center}
+.cr{font-size:10px;font-weight:700;color:var(--cyan)}
 
-  /* ── PIPELINE FUNNEL ── */
-  .funnel-wrap { display: flex; flex-direction: column; gap: 6px; }
-  .funnel-stage { display: flex; align-items: center; gap: 10px; }
-  .funnel-label { width: 130px; font-size: 12px; color: var(--muted); text-align: right; flex-shrink: 0; }
-  .funnel-bar-wrap { flex: 1; height: 28px; background: #1e2d42; border-radius: 4px; overflow: hidden; position: relative; }
-  .funnel-bar { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 8px; transition: width 1.2s ease; }
-  .funnel-count { font-size: 11px; font-weight: 700; color: #fff; position: absolute; right: 8px; top: 50%; transform: translateY(-50%); white-space: nowrap; }
-  .funnel-pct { font-size: 11px; font-weight: 600; color: #fff; position: absolute; left: 8px; top: 50%; transform: translateY(-50%); }
+/* DEALS TABLE */
+.dt{width:100%;border-collapse:collapse}
+.dt th{text-align:left;font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;padding:7px 9px;border-bottom:1px solid var(--border);white-space:nowrap}
+.dt td{padding:8px 9px;font-size:12px;border-bottom:1px solid #1a2336;vertical-align:middle}
+.dt tr:last-child td{border-bottom:none}
+.dt tr:hover td{background:var(--surface2)}
+.rk{width:22px;height:22px;border-radius:50%;background:#1e2d42;color:var(--muted);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.rk1{background:#2d2000;color:#ffd700}.rk2{background:#1a2a1a;color:#c0c0c0}.rk3{background:#2a1a0a;color:#cd7f32}
+.dn{font-weight:600;color:#fff;max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sb{display:inline-block;font-size:10px;font-weight:600;padding:2px 7px;border-radius:7px;white-space:nowrap}
+.lbl{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;white-space:nowrap}
+.hot-l{background:#2d0a0a;color:var(--hot);border:1px solid #3d1515}
+.warm-l{background:#2d1e00;color:var(--warm);border:1px solid #3d2a00}
+.cold-l{background:#001a2d;color:var(--cold);border:1px solid #003d5a}
+.act{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:7px;white-space:nowrap}
 
-  /* ── TOP DEALS TABLE ── */
-  .deals-table { width: 100%; border-collapse: collapse; }
-  .deals-table th {
-    text-align: left;
-    font-size: 10px;
-    font-weight: 600;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    padding: 8px 10px;
-    border-bottom: 1px solid var(--border);
-    white-space: nowrap;
-  }
-  .deals-table td {
-    padding: 9px 10px;
-    font-size: 12px;
-    border-bottom: 1px solid #1a2336;
-    vertical-align: middle;
-  }
-  .deals-table tr:last-child td { border-bottom: none; }
-  .deals-table tr:hover td { background: #162032; }
-  .rank-num {
-    width: 24px; height: 24px;
-    border-radius: 50%;
-    background: #1e2d42;
-    color: var(--muted);
-    font-size: 11px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-  .rank-1 { background: #2d2000; color: #ffd700; }
-  .rank-2 { background: #1a2a1a; color: #c0c0c0; }
-  .rank-3 { background: #2a1a0a; color: #cd7f32; }
-  .deal-name { font-weight: 600; color: #fff; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .deal-company { color: var(--muted); font-size: 11px; }
-  .score-bar-wrap { width: 80px; height: 6px; background: #1e2d42; border-radius: 3px; overflow: hidden; display: inline-block; vertical-align: middle; }
-  .score-bar { height: 100%; border-radius: 3px; }
-  .score-val { font-weight: 700; font-size: 13px; margin-right: 6px; }
+/* CHARTS */
+.ch{position:relative;height:210px}
+.ch-lg{position:relative;height:270px}
+.ch-sm{position:relative;height:150px}
 
-  /* ── LABELS ── */
-  .label {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 10px;
-    font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 10px;
-    white-space: nowrap;
-  }
-  .label-hot { background: #2d0a0a; color: var(--hot); border: 1px solid #3d1515; }
-  .label-warm { background: #2d1e00; color: var(--warm); border: 1px solid #3d2a00; }
-  .label-cold { background: #001a2d; color: var(--cold); border: 1px solid #003d5a; }
-  .label-hot::before { content: '🔥'; font-size: 10px; }
-  .label-warm::before { content: '🌡'; font-size: 10px; }
-  .label-cold::before { content: '❄'; font-size: 10px; }
+/* TABS */
+.tabs{display:flex;gap:4px;margin-bottom:12px}
+.tab{padding:4px 13px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid transparent;color:var(--muted);background:transparent;transition:all .2s}
+.tab.on{background:#1e2d42;border-color:var(--cyan);color:var(--cyan)}
+.tc{display:none}.tc.on{display:block}
 
-  .stage-pill {
-    display: inline-block;
-    font-size: 10px;
-    font-weight: 600;
-    padding: 2px 7px;
-    border-radius: 8px;
-    white-space: nowrap;
-  }
-  .action-pill {
-    display: inline-block;
-    font-size: 10px;
-    font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 8px;
-    white-space: nowrap;
-    cursor: default;
-  }
+/* METRICS PAIR */
+.mp{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:11px}
+.mb-box{background:var(--surface2);border-radius:8px;padding:11px 13px;text-align:center}
+.mb-v{font-size:22px;font-weight:700;color:#fff}
+.mb-l{font-size:10px;color:var(--muted);margin-top:2px}
+.mb-d{font-size:11px;margin-top:3px}
 
-  /* ── CHARTS ── */
-  .chart-wrap { position: relative; height: 220px; }
-  .chart-wrap-lg { position: relative; height: 280px; }
-  .chart-wrap-sm { position: relative; height: 160px; }
+/* INSIGHT */
+.ins{background:linear-gradient(135deg,#0d1f2d,#0a1520);border:1px solid #1a3a5a;border-radius:8px;padding:11px 13px;font-size:12px;color:var(--text);display:flex;gap:9px;align-items:flex-start;margin-top:9px}
+.ins-i{font-size:15px;flex-shrink:0;margin-top:1px}
+.ins b{color:var(--cyan)}
 
-  /* ── WEEKLY/MONTHLY TABS ── */
-  .tab-bar { display: flex; gap: 4px; margin-bottom: 14px; }
-  .tab {
-    padding: 5px 14px;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    border: 1px solid transparent;
-    color: var(--muted);
-    background: transparent;
-    transition: all 0.2s;
-  }
-  .tab.active {
-    background: #1e2d42;
-    border-color: var(--cyan);
-    color: var(--cyan);
-  }
-  .tab-content { display: none; }
-  .tab-content.active { display: block; }
+/* SCORE */
+.sv{font-weight:700;font-size:13px;margin-right:5px}
+.sb-wrap{width:75px;height:5px;background:#1e2d42;border-radius:3px;overflow:hidden;display:inline-block;vertical-align:middle}
+.sb-fill{height:100%;border-radius:3px}
 
-  /* ── METRICS PAIR ── */
-  .metric-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
-  .metric-box {
-    background: var(--card2);
-    border-radius: 8px;
-    padding: 12px 14px;
-    text-align: center;
-  }
-  .metric-box .val { font-size: 24px; font-weight: 700; color: #fff; }
-  .metric-box .lbl { font-size: 11px; color: var(--muted); margin-top: 2px; }
-  .metric-box .diff { font-size: 11px; margin-top: 4px; }
-
-  /* ── LOADING ── */
-  .loading {
-    display: flex; align-items: center; justify-content: center;
-    height: 200px; color: var(--muted); font-size: 13px;
-    gap: 8px;
-  }
-  .spinner {
-    width: 18px; height: 18px;
-    border: 2px solid var(--border);
-    border-top-color: var(--cyan);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* ── RESPONSIVE ── */
-  @media (max-width: 1100px) {
-    .grid-12, .grid-21 { grid-template-columns: 1fr; }
-  }
-  @media (max-width: 800px) {
-    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
-    .main { padding: 12px 14px; }
-    .header { padding: 14px; }
-    .kpi-value { font-size: 22px; }
-  }
-
-  /* ── DIVIDER ── */
-  .divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
-
-  /* ── TOOLTIP ── */
-  [data-tip] { position: relative; cursor: help; }
-  [data-tip]:hover::after {
-    content: attr(data-tip);
-    position: absolute;
-    bottom: calc(100% + 6px);
-    left: 50%;
-    transform: translateX(-50%);
-    background: #1e2d42;
-    color: var(--text);
-    font-size: 11px;
-    padding: 5px 8px;
-    border-radius: 6px;
-    white-space: nowrap;
-    pointer-events: none;
-    z-index: 10;
-    border: 1px solid var(--border);
-  }
-
-  /* ── CONVERSION FUNNEL CARDS ── */
-  .conv-flow {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-  .conv-step {
-    flex: 1;
-    min-width: 80px;
-    background: var(--card2);
-    border-radius: 8px;
-    padding: 12px 10px;
-    text-align: center;
-  }
-  .conv-step .n { font-size: 22px; font-weight: 700; color: #fff; }
-  .conv-step .l { font-size: 10px; color: var(--muted); margin-top: 2px; }
-  .conv-arrow { color: var(--muted); font-size: 18px; flex-shrink: 0; }
-  .conv-rate { font-size: 10px; font-weight: 700; color: var(--cyan); }
-
-  /* ── INSIGHT BOX ── */
-  .insight {
-    background: linear-gradient(135deg, #0d1f2d, #0a1520);
-    border: 1px solid #1a3a5a;
-    border-radius: 8px;
-    padding: 12px 14px;
-    font-size: 12px;
-    color: var(--text);
-    display: flex;
-    gap: 10px;
-    align-items: flex-start;
-  }
-  .insight-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
-  .insight-text b { color: var(--cyan); }
-
-  .mb16 { margin-bottom: 16px; }
-
-  /* scrollbar */
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { background: var(--bg); }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+/* RESPONSIVE */
+@media(max-width:900px){.g2,.g3{grid-template-columns:1fr}.main{padding:12px 14px}.hdr{padding:13px 14px}}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
 </style>
 </head>
 <body>
 
-<!-- ══ HEADER ══ -->
-<div class="header">
-  <div class="header-left">
+<!-- HEADER -->
+<div class="hdr">
+  <div>
     <h1>OA <span>Business Development</span> Command Center</h1>
-    <p>Lead Category: OA Business Development · Pipeline: OA Biz Dev Qualified Leads · Powered by HubSpot</p>
+    <p>Lead Category: OA Business Development &nbsp;·&nbsp; Pipeline: OA Biz Dev Qualified Leads &nbsp;·&nbsp; HubSpot Portal 44390857</p>
   </div>
-  <div class="header-right">
-    <div class="status-badge">LIVE DATA</div>
-    <div class="last-updated">Last refreshed: <span id="lastUpdated">—</span></div>
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+    <div class="badge">LIVE DATA</div>
+    <div class="ts">Updated: <b id="ts">—</b></div>
   </div>
 </div>
 
-<!-- ══ MAIN ══ -->
 <div class="main">
 
-  <!-- ── KPI BAR ── -->
-  <div class="kpi-bar mb16">
-    <div class="kpi" style="--accent:#00d4ff">
-      <div class="kpi-label">Total BD Deals</div>
-      <div class="kpi-value" id="kpiTotal">—</div>
-      <div class="kpi-sub">All-time pipeline</div>
+<!-- KPI BAR -->
+<div class="kpis mb">
+  <div class="kpi" style="--ac:#00d4ff"><div class="kpi-l">Total BD Deals</div><div class="kpi-v" id="k-total">—</div><div class="kpi-s">All-time pipeline</div></div>
+  <div class="kpi" style="--ac:#00e676"><div class="kpi-l">Monthly Deals</div><div class="kpi-v" id="k-mo">—</div><div class="kpi-s" id="k-mo-l">—</div><div class="kpi-t" id="k-mo-t"></div></div>
+  <div class="kpi" style="--ac:#ffc107"><div class="kpi-l">Weekly Deals</div><div class="kpi-v" id="k-wk">—</div><div class="kpi-s" id="k-wk-l">—</div></div>
+  <div class="kpi" style="--ac:#a855f7"><div class="kpi-l">DC Attendance</div><div class="kpi-v" id="k-dc">—</div><div class="kpi-s" id="k-dc-s">—</div></div>
+  <div class="kpi" style="--ac:#ff6b6b"><div class="kpi-l">AC Attendance</div><div class="kpi-v" id="k-ac">—</div><div class="kpi-s" id="k-ac-s">—</div></div>
+  <div class="kpi" style="--ac:#00e676"><div class="kpi-l">Total Paid Deals</div><div class="kpi-v" id="k-paid">—</div><div class="kpi-s" id="k-paid-s">—</div></div>
+</div>
+
+<!-- ROW 1: Tracking + Attendance -->
+<div class="g2">
+  <div class="card">
+    <div class="sec">📅 Deal Tracking</div>
+    <div class="tabs">
+      <button class="tab on" onclick="tab('tr','wk',this)">Weekly</button>
+      <button class="tab" onclick="tab('tr','mo',this)">Monthly</button>
     </div>
-    <div class="kpi" style="--accent:#00e676">
-      <div class="kpi-label">Monthly Deals Created</div>
-      <div class="kpi-value" id="kpiMonthly">—</div>
-      <div class="kpi-sub" id="kpiMonthlyLabel">—</div>
-      <div class="kpi-trend" id="kpiMonthlyTrend"></div>
+    <div id="tr-wk" class="tc on">
+      <div class="mp">
+        <div class="mb-box"><div class="mb-v" id="wk-d">—</div><div class="mb-l">Deals Created</div><div class="mb-d" id="wk-dt"></div></div>
+        <div class="mb-box"><div class="mb-v" id="wk-p">—</div><div class="mb-l">Paid This Week</div></div>
+      </div>
+      <div class="ch-sm"><canvas id="cWk"></canvas></div>
+      <div class="ins"><div class="ins-i">💡</div><div id="wk-ins">—</div></div>
     </div>
-    <div class="kpi" style="--accent:#ffc107">
-      <div class="kpi-label">Weekly Deals Created</div>
-      <div class="kpi-value" id="kpiWeekly">—</div>
-      <div class="kpi-sub" id="kpiWeeklyLabel">—</div>
-    </div>
-    <div class="kpi" style="--accent:#a855f7">
-      <div class="kpi-label">DC Attendance Rate</div>
-      <div class="kpi-value" id="kpiDC">—</div>
-      <div class="kpi-sub" id="kpiDCSub">—</div>
-    </div>
-    <div class="kpi" style="--accent:#ff6b6b">
-      <div class="kpi-label">AC Attendance Rate</div>
-      <div class="kpi-value" id="kpiAC">—</div>
-      <div class="kpi-sub" id="kpiACSub">—</div>
-    </div>
-    <div class="kpi" style="--accent:#00e676">
-      <div class="kpi-label">Total Paid Deals</div>
-      <div class="kpi-value" id="kpiPaid">—</div>
-      <div class="kpi-sub" id="kpiPaidSub">—</div>
+    <div id="tr-mo" class="tc">
+      <div class="mp">
+        <div class="mb-box"><div class="mb-v" id="mo-d">—</div><div class="mb-l" id="mo-dl">Deals Created</div></div>
+        <div class="mb-box"><div class="mb-v" id="mo-p">—</div><div class="mb-l">Paid This Month</div></div>
+      </div>
+      <div class="ch-sm"><canvas id="cMo"></canvas></div>
     </div>
   </div>
 
-  <!-- ══ ROW 1: Weekly/Monthly Tracking + Attendance ══ -->
-  <div class="grid-2 mb16">
-
-    <!-- MODULE 1: Weekly + Monthly Tracking -->
-    <div class="card">
-      <div class="section-title">📅 Deal Tracking</div>
-      <div class="tab-bar">
-        <button class="tab active" onclick="switchTab('tracking','weekly',this)">Weekly</button>
-        <button class="tab" onclick="switchTab('tracking','monthly',this)">Monthly</button>
-      </div>
-
-      <div id="tracking-weekly" class="tab-content active">
-        <div class="metric-pair">
-          <div class="metric-box">
-            <div class="val" id="wkDeals">—</div>
-            <div class="lbl">Deals Created</div>
-            <div class="diff" id="wkDealsDiff"></div>
-          </div>
-          <div class="metric-box">
-            <div class="val" id="wkPaid">—</div>
-            <div class="lbl">Paid This Week</div>
-          </div>
-        </div>
-        <div class="chart-wrap-sm">
-          <canvas id="weeklyChart"></canvas>
-        </div>
-        <div class="insight" style="margin-top:10px">
-          <div class="insight-icon">💡</div>
-          <div class="insight-text" id="weeklyInsight">—</div>
+  <div class="card">
+    <div class="sec">📞 Attendance Performance</div>
+    <div class="att-grid">
+      <div class="att-box">
+        <div class="att-lbl">Discovery Call Rate</div>
+        <div class="att-rate" id="dc-r">—</div>
+        <div class="att-bar-bg"><div class="att-bar" id="dc-b" style="background:linear-gradient(90deg,#a855f7,#7c3aed);width:0%"></div></div>
+        <div class="att-stats">
+          <div class="att-stat"><span>Attended</span><span id="dc-a">—</span></div>
+          <div class="att-stat"><span>No-Show</span><span id="dc-n" style="color:var(--red)">—</span></div>
+          <div class="att-stat"><span>Total</span><span id="dc-t">—</span></div>
         </div>
       </div>
-
-      <div id="tracking-monthly" class="tab-content">
-        <div class="metric-pair">
-          <div class="metric-box">
-            <div class="val" id="moDeals">—</div>
-            <div class="lbl" id="moDealsLabel">Deals Created</div>
-          </div>
-          <div class="metric-box">
-            <div class="val" id="moPaid">—</div>
-            <div class="lbl">Paid This Month</div>
-          </div>
-        </div>
-        <div class="chart-wrap-sm">
-          <canvas id="monthlyChart"></canvas>
+      <div class="att-box">
+        <div class="att-lbl">Alignment Call Rate</div>
+        <div class="att-rate" id="ac-r">—</div>
+        <div class="att-bar-bg"><div class="att-bar" id="ac-b" style="background:linear-gradient(90deg,#00d4ff,#0099bb);width:0%"></div></div>
+        <div class="att-stats">
+          <div class="att-stat"><span>Attended</span><span id="ac-a">—</span></div>
+          <div class="att-stat"><span>No-Show</span><span id="ac-n" style="color:var(--red)">—</span></div>
+          <div class="att-stat"><span>Total</span><span id="ac-t">—</span></div>
         </div>
       </div>
     </div>
+    <div style="margin-top:13px"><canvas id="cAtt" height="120"></canvas></div>
+  </div>
+</div>
 
-    <!-- MODULE 2: Attendance Performance -->
-    <div class="card">
-      <div class="section-title">📞 Attendance Performance</div>
-      <div class="attendance-grid">
-        <div class="attendance-item">
-          <div class="att-label">Discovery Call Rate</div>
-          <div class="att-rate" id="dcRate">—</div>
-          <div class="att-bar-wrap">
-            <div class="att-bar" id="dcBar" style="background: linear-gradient(90deg,#a855f7,#7c3aed); width:0%"></div>
-          </div>
-          <div class="att-stats">
-            <div class="att-stat"><span>Attended</span><span id="dcAtt">—</span></div>
-            <div class="att-stat"><span>No-Show</span><span id="dcNS" style="color:var(--red)">—</span></div>
-            <div class="att-stat"><span>Total</span><span id="dcTot">—</span></div>
-          </div>
-        </div>
-        <div class="attendance-item">
-          <div class="att-label">Alignment Call Rate</div>
-          <div class="att-rate" id="acRate">—</div>
-          <div class="att-bar-wrap">
-            <div class="att-bar" id="acBar" style="background: linear-gradient(90deg,#00d4ff,#0099bb); width:0%"></div>
-          </div>
-          <div class="att-stats">
-            <div class="att-stat"><span>Attended</span><span id="acAtt">—</span></div>
-            <div class="att-stat"><span>No-Show</span><span id="acNS" style="color:var(--red)">—</span></div>
-            <div class="att-stat"><span>Total</span><span id="acTot">—</span></div>
-          </div>
-        </div>
-      </div>
-      <div style="margin-top:14px">
-        <canvas id="attendanceChart" height="130"></canvas>
-      </div>
+<!-- ROW 2: Conversion + Pipeline -->
+<div class="g2">
+  <div class="card">
+    <div class="sec">💰 Revenue Conversion</div>
+    <div class="conv-flow">
+      <div class="cs"><div class="cs-n" id="cv-tot">—</div><div class="cs-l">Total Deals</div></div>
+      <div style="text-align:center"><div class="ca">→</div><div class="cr" id="cv-r1">—</div></div>
+      <div class="cs"><div class="cs-n" id="cv-dc">—</div><div class="cs-l">DC Attended</div></div>
+      <div style="text-align:center"><div class="ca">→</div><div class="cr" id="cv-r2">—</div></div>
+      <div class="cs"><div class="cs-n" id="cv-ac">—</div><div class="cs-l">AC Attended</div></div>
+      <div style="text-align:center"><div class="ca">→</div><div class="cr" id="cv-r3">—</div></div>
+      <div class="cs" style="background:#0d2e1a"><div class="cs-n" style="color:var(--green)" id="cv-paid">—</div><div class="cs-l">Paid Deals</div></div>
     </div>
+    <div class="ch" style="height:165px"><canvas id="cConv"></canvas></div>
   </div>
 
-  <!-- ══ ROW 2: Conversion + Pipeline ══ -->
-  <div class="grid-2 mb16">
+  <div class="card">
+    <div class="sec">📊 Deal Pipeline View</div>
+    <div class="funnel" id="funnel">Loading…</div>
+  </div>
+</div>
 
-    <!-- MODULE 3: Revenue Conversion -->
-    <div class="card">
-      <div class="section-title">💰 Revenue Conversion</div>
-      <div class="conv-flow" id="convFlow">
-        <div class="conv-step">
-          <div class="n" id="convTotal">—</div>
-          <div class="l">Total Deals</div>
-        </div>
-        <div style="text-align:center; flex-shrink:0">
-          <div class="conv-arrow">→</div>
-          <div class="conv-rate" id="rateStep1">—</div>
-        </div>
-        <div class="conv-step">
-          <div class="n" id="convDC">—</div>
-          <div class="l">DC Attended</div>
-        </div>
-        <div style="text-align:center; flex-shrink:0">
-          <div class="conv-arrow">→</div>
-          <div class="conv-rate" id="rateStep2">—</div>
-        </div>
-        <div class="conv-step">
-          <div class="n" id="convAC">—</div>
-          <div class="l">AC Attended</div>
-        </div>
-        <div style="text-align:center; flex-shrink:0">
-          <div class="conv-arrow">→</div>
-          <div class="conv-rate" id="rateStep3">—</div>
-        </div>
-        <div class="conv-step" style="background:#0d2e1a">
-          <div class="n" style="color:var(--green)" id="convPaid">—</div>
-          <div class="l">Paid Deals</div>
-        </div>
-      </div>
-      <div style="margin-top:14px">
-        <div class="chart-wrap" style="height:170px">
-          <canvas id="conversionChart"></canvas>
-        </div>
-      </div>
-    </div>
-
-    <!-- MODULE 4: Pipeline View -->
-    <div class="card">
-      <div class="section-title">📊 Deal Pipeline View</div>
-      <div class="funnel-wrap" id="funnelWrap">
-        <div class="loading"><div class="spinner"></div> Building pipeline…</div>
-      </div>
+<!-- ROW 3: Scoring Engine -->
+<div class="card mb">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;flex-wrap:wrap;gap:8px">
+    <div class="sec" style="margin-bottom:0">🧠 Deal Scoring Engine · Top 20 Priority Deals</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap">
+      <span class="lbl hot-l">🔥 Hot – Immediate follow-up</span>
+      <span class="lbl warm-l">🌡 Warm – Needs nurturing</span>
+      <span class="lbl cold-l">❄ Cold – Re-engage later</span>
     </div>
   </div>
-
-  <!-- ══ ROW 3: Scoring Engine + Top 20 ══ -->
-  <div class="card mb16">
-    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; flex-wrap:wrap; gap:8px">
-      <div class="section-title" style="margin-bottom:0">🧠 Deal Scoring Engine · Top 20 Priority Deals</div>
-      <div style="display:flex; gap:8px; flex-wrap:wrap">
-        <span class="label label-hot">Hot – Immediate follow-up</span>
-        <span class="label label-warm">Warm – Needs nurturing</span>
-        <span class="label label-cold">Cold – Re-engage later</span>
-      </div>
-    </div>
-    <div style="overflow-x:auto">
-      <table class="deals-table">
-        <thead>
-          <tr>
-            <th style="width:36px">#</th>
-            <th>Company / Role</th>
-            <th>Stage</th>
-            <th>Score</th>
-            <th>Last Activity</th>
-            <th>Status</th>
-            <th>Recommended Action</th>
-          </tr>
-        </thead>
-        <tbody id="topDealsBody">
-          <tr><td colspan="7"><div class="loading"><div class="spinner"></div> Scoring deals…</div></td></tr>
-        </tbody>
-      </table>
-    </div>
-    <div style="margin-top:14px; display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px" id="scoringLegend">
-      <div class="insight">
-        <div class="insight-icon">⚡</div>
-        <div class="insight-text">Scoring: <b>+25 DC Attended</b> · <b>+20 AC Attended</b> · <b>+30 Proposal Stage</b> · <b>+40 Paid Fee</b> · <b>+15 Notes Present</b> · <b>+10 Active ≤7d</b></div>
-      </div>
-      <div class="insight">
-        <div class="insight-icon">⚠️</div>
-        <div class="insight-text">Deductions: <b>−20 DC No-Show</b> · <b>−15 AC No-Show</b> · <b>−25 Inactive ≥14d</b> · <b>−30 Closed Lost</b></div>
-      </div>
-    </div>
+  <div style="overflow-x:auto">
+    <table class="dt">
+      <thead><tr>
+        <th style="width:32px">#</th><th>Company / Role</th><th>Stage</th>
+        <th>Score</th><th>Last Activity</th><th>Status</th><th>Action</th>
+      </tr></thead>
+      <tbody id="tBody"></tbody>
+    </table>
   </div>
-
-  <!-- ══ ROW 4: Charts ══ -->
-  <div class="grid-2 mb16">
-    <div class="card">
-      <div class="section-title">📈 Pipeline Stage Distribution</div>
-      <div class="chart-wrap-lg">
-        <canvas id="stageDistChart"></canvas>
-      </div>
-    </div>
-    <div class="card">
-      <div class="section-title">📈 Weekly Trend (Last 4 Cycles)</div>
-      <div class="chart-wrap-lg">
-        <canvas id="trendChart"></canvas>
-      </div>
-    </div>
+  <div style="margin-top:12px;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:9px">
+    <div class="ins"><div class="ins-i">⚡</div><div class="ins"><b>+25 DC Attended · +20 AC Attended · +30 Proposal Stage · +40 Paid Fee · +15 Notes · +10 Active ≤7d</b></div></div>
+    <div class="ins"><div class="ins-i">⚠️</div><div class="ins"><b>−20 DC No-Show · −15 AC No-Show · −25 Inactive ≥14d · −30 Closed Lost</b></div></div>
   </div>
+</div>
+
+<!-- ROW 4: Charts -->
+<div class="g2">
+  <div class="card">
+    <div class="sec">📈 Pipeline Stage Distribution</div>
+    <div class="ch-lg"><canvas id="cStage"></canvas></div>
+  </div>
+  <div class="card">
+    <div class="sec">📈 Weekly Deal Trend (Last 4 Cycles)</div>
+    <div class="ch-lg"><canvas id="cTrend"></canvas></div>
+  </div>
+</div>
 
 </div><!-- /main -->
 
+<!-- ═══════════════════════════════════════════════
+     REPORT DATA  —  Updated by Claude on refresh
+     Last updated: 2026-05-01
+═══════════════════════════════════════════════ -->
+<script id="report-data" type="application/json">
+{
+  "meta": {
+    "lastUpdated": "2026-05-01",
+    "cycle": "Tuesday-Monday",
+    "category": "OA Business Development",
+    "hubspotPortal": "44390857"
+  },
+  "pipeline": { "id": "68218158", "name": "OA Biz Dev Qualified Leads", "total": 1324 },
+  "stageCounts": {
+    "dealCreated": 4, "dcCompleted": 146, "dcNoShow": 229,
+    "acCompleted": 83, "acNoShow": 110, "hiringRecruiting": 39,
+    "closedWon": 58, "closedLost": 415, "otherActive": 240
+  },
+  "attendance": {
+    "dcAttended": 146, "dcNoShow": 229, "dcTotal": 375, "dcRate": 38.9,
+    "acAttended": 83,  "acNoShow": 110, "acTotal": 193, "acRate": 43.0
+  },
+  "monthly": {
+    "label": "May 2026", "dealsCreated": 0, "paidDeals": 0,
+    "prevLabel": "April 2026", "prevDeals": 10, "prevPaid": 2
+  },
+  "weekly": {
+    "label": "Apr 28–29", "dealsCreated": 0, "paidDeals": 1,
+    "prevLabel": "Apr 21–22", "prevDeals": 1, "prevPaid": 0,
+    "trend": [2, 2, 1, 0]
+  },
+  "paidTotal": 114,
+  "deals": [
+    {"id":"51244763755","name":"LMTD - Creative Roles 3 HCs","stageId":"133348729","stage":"Hiring & Recruiting","paid":"2026-01-29","lastActivity":"2026-04-30T16:13:19Z","hasNotes":true,"closedLost":false,"amount":600},
+    {"id":"59609927595","name":"Cubex (UK) Ltd - Commercial Manager","stageId":"133348729","stage":"Hiring & Recruiting","paid":"2026-04-28","lastActivity":"2026-04-30T15:55:02Z","hasNotes":true,"closedLost":false,"amount":600},
+    {"id":"58479464845","name":"GavBiz - Business Dev Manager","stageId":"133348729","stage":"Hiring & Recruiting","paid":"2026-04-17","lastActivity":"2026-04-17T12:23:28Z","hasNotes":true,"closedLost":false,"amount":600},
+    {"id":"51268777592","name":"Webarc - 2 FT Sales Representative","stageId":"133348729","stage":"Hiring & Recruiting","paid":"2025-12-24","lastActivity":"2026-03-04T18:53:27Z","hasNotes":true,"closedLost":false,"amount":700},
+    {"id":"39062092865","name":"Purple Moon Designs","stageId":"133348729","stage":"Hiring & Recruiting","paid":"2025-07-04","lastActivity":"2026-03-05T17:32:34Z","hasNotes":true,"closedLost":false,"amount":350},
+    {"id":"57141064490","name":"SolCo - Tech Support","stageId":"133348729","stage":"Hiring & Recruiting","paid":"2026-03-20","lastActivity":"2026-03-23T13:04:37Z","hasNotes":true,"closedLost":false,"amount":600},
+    {"id":"56279873975","name":"C3 Ingenuity - Multiple Roles","stageId":"133348729","stage":"Hiring & Recruiting","paid":"2026-03-20","lastActivity":"2026-03-23T21:24:31Z","hasNotes":true,"closedLost":false,"amount":600},
+    {"id":"55815121924","name":"TSG - Sr. Accountant","stageId":"133348729","stage":"Hiring & Recruiting","paid":"2026-02-28","lastActivity":"2026-03-03T18:19:34Z","hasNotes":true,"closedLost":false,"amount":600},
+    {"id":"38114201458","name":"Optima Energy - Full Time Data Analyst","stageId":"132946334","stage":"Closed Won","paid":"2025-07-31","lastActivity":"2026-02-18T09:26:20Z","hasNotes":true,"closedLost":false,"amount":600},
+    {"id":"55636973160","name":"EARLY PR - Admin Assistant & PR Mgr","stageId":"133348729","stage":"Hiring & Recruiting","paid":"2026-02-07","lastActivity":"2026-02-07T00:16:24Z","hasNotes":true,"closedLost":false,"amount":600},
+    {"id":"54347203933","name":"Book Outlet International AB - CSR","stageId":"133348729","stage":"Hiring & Recruiting","paid":"2026-01-30","lastActivity":"2026-01-30T12:41:53Z","hasNotes":true,"closedLost":false,"amount":600},
+    {"id":"48978124947","name":"P&D Painting CT - Marketing & Sales","stageId":"133348729","stage":"Hiring & Recruiting","paid":"2025-11-13","lastActivity":"2025-11-14T00:44:26Z","hasNotes":true,"closedLost":false,"amount":1800},
+    {"id":"43896830553","name":"Gulf Coast Infrared - BD & Marketing","stageId":"133348729","stage":"Hiring & Recruiting","paid":"2025-10-08","lastActivity":"2025-10-08T13:43:55Z","hasNotes":true,"closedLost":false,"amount":600},
+    {"id":"28531368813","name":"KitBrix - Amazon Platform Manager","stageId":"133348729","stage":"Hiring & Recruiting","paid":"2024-12-11","lastActivity":"2025-06-17T18:32:06Z","hasNotes":true,"closedLost":false,"amount":600},
+    {"id":"59225122378","name":"Blue Feather Designs - CAD Specialist","stageId":"133348729","stage":"Hiring & Recruiting","paid":null,"lastActivity":"2026-04-23T13:39:23Z","hasNotes":true,"closedLost":true,"amount":600},
+    {"id":"58369075975","name":"Lunds - Data Analyst for Quote Patterns","stageId":"132946333","stage":"AC Completed","paid":null,"lastActivity":"2026-04-13T14:45:39Z","hasNotes":true,"closedLost":false,"amount":600},
+    {"id":"59419271087","name":"DC Center LLC - Cold Callers","stageId":"222405237","stage":"DC Completed","paid":null,"lastActivity":"2026-04-30T16:32:59Z","hasNotes":false,"closedLost":false,"amount":600},
+    {"id":"58369075827","name":"Functional Skills UK - QA & Course Designer","stageId":"133003872","stage":"AC No Show","paid":null,"lastActivity":"2026-04-28T12:12:34Z","hasNotes":true,"closedLost":false,"amount":600},
+    {"id":"58986961740","name":"EPM Engineering - IT AI Automation","stageId":"132946331","stage":"DC No Show","paid":null,"lastActivity":"2026-04-29T16:45:55Z","hasNotes":true,"closedLost":false,"amount":600},
+    {"id":"59610016848","name":"PixelAscend - Sales Closer","stageId":"132946331","stage":"DC No Show","paid":null,"lastActivity":"2026-04-27T14:01:22Z","hasNotes":true,"closedLost":false,"amount":600},
+    {"id":"59503420011","name":"Vista Film - Sales Rep & Lead Gen","stageId":"132946331","stage":"DC No Show","paid":null,"lastActivity":"2026-04-27T13:15:40Z","hasNotes":true,"closedLost":false,"amount":600},
+    {"id":"59158330175","name":"Keith Millard - Customer Support","stageId":"132946331","stage":"DC No Show","paid":null,"lastActivity":"2026-04-20T07:37:10Z","hasNotes":true,"closedLost":false,"amount":600},
+    {"id":"59180966457","name":"V4 Consumer - Outbound Sales","stageId":"991351894","stage":"Deal Unqualified","paid":null,"lastActivity":"2026-04-28T16:54:40Z","hasNotes":false,"closedLost":false,"amount":600},
+    {"id":"58798212655","name":"Koita Exports Inc - Accountant","stageId":"133348729","stage":"Hiring & Recruiting","paid":null,"lastActivity":"2026-04-17T14:08:21Z","hasNotes":false,"closedLost":true,"amount":600},
+    {"id":"51831982161","name":"IR Chiropractic - 2 VA","stageId":"133348729","stage":"Hiring & Recruiting","paid":"2026-01-09","lastActivity":"2026-01-16T10:24:41Z","hasNotes":true,"closedLost":false,"amount":600}
+  ]
+}
+</script>
+
 <script>
-// ══════════════════════════════════════════════
-//  SCORING ENGINE
-// ══════════════════════════════════════════════
-const STAGE_BASE = {
-  '132946329': 0,   // Deal Created
-  '244709522': 5,   // DC Outreach
-  '222405237': 25,  // DC Completed ← attended
-  '132946331': -20, // DC No Show
-  '244520495': 30,  // AC Outreach (DC was attended)
-  '132946333': 45,  // AC Completed (+25 DC +20 AC)
-  '133003872': 10,  // AC No Show (+25 DC −15 AC NS)
-  '1029860491': 55, // Candidate Discovery
-  '1053002936': 55, // CD Scheduled
-  '1053002937': 65, // CD Completed
-  '1053002935': 45, // CD No Show
-  '133348729': 75,  // Hiring & Recruiting
-  '132946334': 75,  // Closed Won
-  '132946335': -30, // Closed Lost
-  '991351894': -20, // Deal Unqualified
-};
+/* ── DATA ── */
+var D = JSON.parse(document.getElementById('report-data').textContent);
+var SC = D.stageCounts, A = D.attendance, M = D.monthly, W = D.weekly;
 
-function scoreDeal(deal) {
-  let s = STAGE_BASE[deal.stage_id] || 0;
-  if (deal.paid_recruitment_date) s += 40;
-  if (deal.has_notes) s += 15;
-  if (deal.hs_is_closed_lost && !deal.paid_recruitment_date) s += -30;
-  const days = daysSince(deal.last_activity);
-  if (days <= 7) s += 10;
-  if (days >= 14) s -= 25;
-  return Math.max(0, Math.min(100, s));
+/* ── SCORING ── */
+var BASE = {'132946329':0,'244709522':5,'222405237':25,'132946331':-20,'244520495':30,
+  '132946333':45,'133003872':10,'1029860491':55,'1053002936':55,'1053002937':65,
+  '1053002935':45,'133348729':75,'132946334':75,'132946335':-30,'991351894':-20};
+
+function daysSince(s){return s?(Date.now()-new Date(s).getTime())/864e5:999}
+
+function score(d){
+  var s=BASE[d.stageId]||0;
+  if(d.paid) s+=40;
+  if(d.hasNotes) s+=15;
+  if(d.closedLost&&!d.paid) s-=30;
+  var ds=daysSince(d.lastActivity);
+  if(ds<=7) s+=10;
+  if(ds>=14) s-=25;
+  return Math.max(0,Math.min(100,s));
 }
 
-function daysSince(dateStr) {
-  if (!dateStr) return 999;
-  return (Date.now() - new Date(dateStr).getTime()) / 864e5;
+function label(s){
+  if(s>=65) return ['hot-l','🔥 Hot'];
+  if(s>=35) return ['warm-l','🌡 Warm'];
+  return ['cold-l','❄ Cold'];
 }
 
-function getLabel(score) {
-  if (score >= 65) return ['hot', 'Hot – Immediate follow-up'];
-  if (score >= 35) return ['warm', 'Warm – Needs nurturing'];
-  return ['cold', 'Cold – Re-engage later'];
-}
-
-function getAction(deal, score) {
-  const stage = deal.stage_id;
-  if (deal.paid_recruitment_date) return ['#00e676','#0d2e1a','Close / Manage'];
-  if (stage === '222405237') return ['#00d4ff','#001a2d','Push → AC'];
-  if (stage === '132946333') return ['#a855f7','#1a0d2e','Push → Proposal'];
-  if (stage === '133348729') return ['#ffc107','#2d1e00','Nurture'];
-  if (stage === '132946331' || stage === '133003872') return ['#ff6b6b','#2d0a0a','Re-Engage'];
-  if (score >= 65) return ['#ff4757','#2d0a0a','Follow-up Now'];
-  if (score >= 35) return ['#ffa502','#2d1500','Push Forward'];
+function action(d,s){
+  if(d.paid)           return ['#00e676','#0d2e1a','Close / Manage'];
+  if(d.stageId==='222405237') return ['#00d4ff','#001a2d','Push → AC'];
+  if(d.stageId==='132946333') return ['#a855f7','#1a0d2e','Push → Proposal'];
+  if(d.stageId==='133348729') return ['#ffc107','#2d1e00','Nurture'];
+  if(d.stageId==='132946331'||d.stageId==='133003872') return ['#ff6b6b','#2d0a0a','Re-Engage'];
+  if(s>=65) return ['#ff4757','#2d0a0a','Follow-up Now'];
+  if(s>=35) return ['#ffa502','#2d1500','Push Forward'];
   return ['#64748b','#1a2336','Nurture'];
 }
 
-function stageColor(stageId) {
-  const map = {
-    '132946329':'#64748b','244709522':'#3b82f6','222405237':'#a855f7',
+function stageClr(id){
+  var m={'132946329':'#3b82f6','244709522':'#3b82f6','222405237':'#a855f7',
     '132946331':'#ff4444','244520495':'#00bcd4','132946333':'#00d4ff',
     '133003872':'#ff9800','133348729':'#00e676','132946334':'#22c55e',
-    '132946335':'#ef4444','991351894':'#78350f','1029860491':'#10b981',
-    '1053002936':'#10b981','1053002937':'#059669','1053002935':'#dc2626',
-  };
-  return map[stageId] || '#64748b';
+    '132946335':'#ef4444','991351894':'#78350f'};
+  return m[id]||'#64748b';
 }
 
-function formatDate(dateStr) {
-  if (!dateStr) return '—';
-  const d = new Date(dateStr);
-  const days = Math.round(daysSince(dateStr));
-  if (days === 0) return 'Today';
-  if (days === 1) return '1 day ago';
-  if (days < 7) return `${days} days ago`;
-  if (days < 31) return `${Math.round(days/7)}w ago`;
-  return `${Math.round(days/30)}mo ago`;
+function fmtDate(s){
+  if(!s) return '—';
+  var d=Math.round(daysSince(s));
+  if(d===0) return 'Today';
+  if(d===1) return '1 day ago';
+  if(d<7)  return d+'d ago';
+  if(d<31) return Math.round(d/7)+'w ago';
+  return Math.round(d/30)+'mo ago';
 }
 
-function activityClass(dateStr) {
-  const d = Math.round(daysSince(dateStr));
-  if (d <= 7) return 'color:var(--green)';
-  if (d <= 14) return 'color:var(--yellow)';
+function actClr(s){
+  var d=Math.round(daysSince(s));
+  if(d<=7)  return 'color:var(--green)';
+  if(d<=14) return 'color:var(--yellow)';
   return 'color:var(--red)';
 }
 
-// ══════════════════════════════════════════════
-//  RENDER
-// ══════════════════════════════════════════════
-let charts = {};
+/* ── CHARTS ── */
+var charts={};
+function mkChart(id,cfg){if(charts[id])charts[id].destroy();var c=document.getElementById(id);if(!c)return;charts[id]=new Chart(c.getContext('2d'),cfg)}
 
-function destroyChart(id) {
-  if (charts[id]) { charts[id].destroy(); delete charts[id]; }
-}
+var cOpts={responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#64748b',font:{size:10}}}},scales:{x:{grid:{color:'#1e2d42'},ticks:{color:'#64748b',font:{size:10}}},y:{grid:{color:'#1e2d42'},ticks:{color:'#64748b',font:{size:10}},beginAtZero:true}}};
 
-function initDashboard(data) {
-  const gen = new Date(data.generated_at);
-  document.getElementById('lastUpdated').textContent =
-    gen.toLocaleString('en-PH',{timeZone:'Asia/Manila',dateStyle:'medium',timeStyle:'short'}) + ' PHT';
+/* ── RENDER ── */
+function init(){
+  /* timestamp */
+  document.getElementById('ts').textContent=new Date(D.meta.lastUpdated).toLocaleDateString('en-PH',{month:'short',day:'numeric',year:'numeric'});
 
-  renderKPIs(data);
-  renderAttendance(data);
-  renderTracking(data);
-  renderConversion(data);
-  renderPipeline(data);
-  renderTopDeals(data);
-  renderCharts(data);
-}
+  /* KPIs */
+  setText('k-total',D.pipeline.total.toLocaleString());
+  setText('k-mo',M.dealsCreated); setText('k-mo-l',M.label);
+  var diff=M.dealsCreated-M.prevDeals, dir=diff>=0?'▲':'▼', cls=diff>=0?'up':'down';
+  document.getElementById('k-mo-t').innerHTML='<span class="'+cls+'">'+dir+' '+Math.abs(diff)+' vs '+M.prevLabel+'</span>';
+  setText('k-wk',W.dealsCreated); setText('k-wk-l',W.label);
+  setText('k-dc',A.dcRate.toFixed(1)+'%'); setText('k-dc-s',A.dcAttended+' attended / '+A.dcTotal+' scheduled');
+  setText('k-ac',A.acRate.toFixed(1)+'%'); setText('k-ac-s',A.acAttended+' attended / '+A.acTotal+' scheduled');
+  setText('k-paid',D.paidTotal); setText('k-paid-s',M.prevPaid+' paid in '+M.prevLabel);
 
-function renderKPIs(d) {
-  document.getElementById('kpiTotal').textContent = d.pipeline.total.toLocaleString();
-  document.getElementById('kpiMonthly').textContent = d.monthly.deals_created;
-  document.getElementById('kpiMonthlyLabel').textContent = d.monthly.label;
-  const diff = d.monthly.deals_created - d.monthly.prev_deals_created;
-  const dir = diff >= 0 ? '▲' : '▼';
-  const cls = diff >= 0 ? 'up' : 'down';
-  document.getElementById('kpiMonthlyTrend').innerHTML =
-    `<span class="${cls}">${dir} ${Math.abs(diff)} vs ${d.monthly.prev_month_label}</span>`;
-  document.getElementById('kpiWeekly').textContent = d.weekly.deals_created;
-  document.getElementById('kpiWeeklyLabel').textContent = d.weekly.label;
-  document.getElementById('kpiDC').textContent = d.attendance.dc_rate_pct.toFixed(1) + '%';
-  document.getElementById('kpiDCSub').textContent = `${d.attendance.dc_attended} attended / ${d.attendance.dc_scheduled_total} scheduled`;
-  document.getElementById('kpiAC').textContent = d.attendance.ac_rate_pct.toFixed(1) + '%';
-  document.getElementById('kpiACSub').textContent = `${d.attendance.ac_attended} attended / ${d.attendance.ac_scheduled_total} scheduled`;
-  document.getElementById('kpiPaid').textContent = d.paid_total;
-  document.getElementById('kpiPaidSub').textContent = `${d.monthly.prev_paid_deals} in ${d.monthly.prev_month_label}`;
-}
+  /* attendance */
+  setText('dc-r',A.dcRate.toFixed(1)+'%'); document.getElementById('dc-b').style.width=A.dcRate+'%';
+  setText('dc-a',A.dcAttended); setText('dc-n',A.dcNoShow); setText('dc-t',A.dcTotal);
+  setText('ac-r',A.acRate.toFixed(1)+'%'); document.getElementById('ac-b').style.width=A.acRate+'%';
+  setText('ac-a',A.acAttended); setText('ac-n',A.acNoShow); setText('ac-t',A.acTotal);
 
-function renderAttendance(d) {
-  const a = d.attendance;
-  document.getElementById('dcRate').textContent = a.dc_rate_pct.toFixed(1) + '%';
-  document.getElementById('dcBar').style.width = a.dc_rate_pct + '%';
-  document.getElementById('dcAtt').textContent = a.dc_attended;
-  document.getElementById('dcNS').textContent = a.dc_no_show;
-  document.getElementById('dcTot').textContent = a.dc_scheduled_total;
-  document.getElementById('acRate').textContent = a.ac_rate_pct.toFixed(1) + '%';
-  document.getElementById('acBar').style.width = a.ac_rate_pct + '%';
-  document.getElementById('acAtt').textContent = a.ac_attended;
-  document.getElementById('acNS').textContent = a.ac_no_show;
-  document.getElementById('acTot').textContent = a.ac_scheduled_total;
+  /* tracking */
+  setText('wk-d',W.dealsCreated); setText('wk-p',W.paidDeals);
+  var wd=W.dealsCreated-W.prevDeals;
+  document.getElementById('wk-dt').innerHTML='<span class="'+(wd>=0?'up':'down')+'">'+(wd>=0?'▲':'▼')+' '+Math.abs(wd)+' vs prev</span>';
+  setText('mo-d',M.dealsCreated); setText('mo-p',M.paidDeals);
+  document.getElementById('mo-dl').textContent=M.label+' Deals';
+  document.getElementById('wk-ins').innerHTML=W.dealsCreated===0
+    ?'No new deals this cycle (<b>'+W.label+'</b>). Focus on advancing existing pipeline deals.'
+    :'<b>'+W.dealsCreated+' new deal'+(W.dealsCreated>1?'s':'')+' </b>created in cycle '+W.label+'.';
 
-  destroyChart('attendanceChart');
-  const ctx = document.getElementById('attendanceChart').getContext('2d');
-  charts['attendanceChart'] = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: ['Discovery Call (DC)', 'Alignment Call (AC)'],
-      datasets: [
-        { label: 'Attended', data: [a.dc_attended, a.ac_attended], backgroundColor: ['#7c3aed','#0099bb'], borderRadius: 4 },
-        { label: 'No-Show',  data: [a.dc_no_show, a.ac_no_show],   backgroundColor: ['#4a1d80','#004d66'], borderRadius: 4 },
-      ]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { labels: { color: '#64748b', font: { size: 11 } } } },
-      scales: {
-        x: { stacked: true, grid: { color: '#1e2d42' }, ticks: { color: '#64748b' } },
-        y: { stacked: true, grid: { color: '#1e2d42' }, ticks: { color: '#64748b' } }
-      }
-    }
-  });
-}
+  /* conversion */
+  var t=D.pipeline.total, dc=A.dcAttended, ac=A.acAttended, p=D.paidTotal;
+  setText('cv-tot',t.toLocaleString()); setText('cv-dc',dc); setText('cv-ac',ac); setText('cv-paid',p);
+  setText('cv-r1',((dc/t)*100).toFixed(1)+'%'); setText('cv-r2',((ac/dc)*100).toFixed(1)+'%'); setText('cv-r3',((p/ac)*100).toFixed(1)+'%');
 
-function renderTracking(d) {
-  document.getElementById('wkDeals').textContent = d.weekly.deals_created;
-  document.getElementById('wkPaid').textContent = d.weekly.paid_deals;
-  const wdiff = d.weekly.deals_created - d.weekly.prev_deals_created;
-  document.getElementById('wkDealsDiff').innerHTML =
-    `<span class="${wdiff >= 0 ? 'up' : 'down'}">${wdiff >= 0 ? '▲' : '▼'} ${Math.abs(wdiff)} vs prev week</span>`;
-  document.getElementById('moDeals').textContent = d.monthly.deals_created;
-  document.getElementById('moPaid').textContent = d.monthly.paid_deals;
-  document.getElementById('moDealsLabel').textContent = d.monthly.label + ' Deals';
-
-  const insightEl = document.getElementById('weeklyInsight');
-  if (d.weekly.deals_created === 0) {
-    insightEl.innerHTML = 'No new deals created this cycle (<b>' + d.weekly.label + '</b>). Focus should shift to advancing existing deals in pipeline.';
-  } else {
-    insightEl.innerHTML = '<b>' + d.weekly.deals_created + ' new deals</b> created in cycle ' + d.weekly.label + '. Pipeline is actively growing.';
-  }
-
-  // Weekly chart
-  destroyChart('weeklyChart');
-  const wCtx = document.getElementById('weeklyChart').getContext('2d');
-  charts['weeklyChart'] = new Chart(wCtx, {
-    type: 'bar',
-    data: {
-      labels: ['2 Wks Ago','Last Week','This Week'],
-      datasets: [
-        { label: 'Deals Created', data: [2, d.weekly.prev_deals_created, d.weekly.deals_created], backgroundColor: '#00d4ff55', borderColor: '#00d4ff', borderWidth: 1, borderRadius: 4 },
-        { label: 'Paid Deals', data: [0, d.weekly.prev_paid_deals, d.weekly.paid_deals], backgroundColor: '#00e67655', borderColor: '#00e676', borderWidth: 1, borderRadius: 4 },
-      ]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { labels: { color: '#64748b', font: { size: 10 } } } },
-      scales: {
-        x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 10 } } },
-        y: { grid: { color: '#1e2d42' }, ticks: { color: '#64748b', font: { size: 10 } }, beginAtZero: true, stepSize: 1 }
-      }
-    }
-  });
-
-  // Monthly chart
-  destroyChart('monthlyChart');
-  const mCtx = document.getElementById('monthlyChart').getContext('2d');
-  charts['monthlyChart'] = new Chart(mCtx, {
-    type: 'bar',
-    data: {
-      labels: [d.monthly.prev_month_label, d.monthly.label],
-      datasets: [
-        { label: 'Deals Created', data: [d.monthly.prev_deals_created, d.monthly.deals_created], backgroundColor: '#00d4ff55', borderColor: '#00d4ff', borderWidth: 1, borderRadius: 4 },
-        { label: 'Paid Deals', data: [d.monthly.prev_paid_deals, d.monthly.paid_deals], backgroundColor: '#00e67655', borderColor: '#00e676', borderWidth: 1, borderRadius: 4 },
-      ]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { labels: { color: '#64748b', font: { size: 10 } } } },
-      scales: {
-        x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 10 } } },
-        y: { grid: { color: '#1e2d42' }, ticks: { color: '#64748b', font: { size: 10 } }, beginAtZero: true }
-      }
-    }
-  });
-}
-
-function renderConversion(d) {
-  const t = d.pipeline.total;
-  const dc = d.attendance.dc_attended;
-  const ac = d.attendance.ac_attended;
-  const p = d.paid_total;
-  document.getElementById('convTotal').textContent = t.toLocaleString();
-  document.getElementById('convDC').textContent = dc;
-  document.getElementById('convAC').textContent = ac;
-  document.getElementById('convPaid').textContent = p;
-  document.getElementById('rateStep1').textContent = ((dc/t)*100).toFixed(1) + '%';
-  document.getElementById('rateStep2').textContent = ((ac/dc)*100).toFixed(1) + '%';
-  document.getElementById('rateStep3').textContent = ((p/ac)*100).toFixed(1) + '%';
-
-  destroyChart('conversionChart');
-  const ctx = document.getElementById('conversionChart').getContext('2d');
-  charts['conversionChart'] = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: ['Total Deals','DC Attended','AC Attended','Paid'],
-      datasets: [{
-        data: [t, dc, ac, p],
-        backgroundColor: ['#1e2d42','#7c3aed','#0099bb','#00e676'],
-        borderRadius: 6,
-      }]
-    },
-    options: {
-      indexAxis: 'y',
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        x: { grid: { color: '#1e2d42' }, ticks: { color: '#64748b', font: { size: 10 } } },
-        y: { grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 11 } } }
-      }
-    }
-  });
-}
-
-function renderPipeline(d) {
-  const sc = d.stage_counts;
-  const total = d.pipeline.total;
-  const stages = [
-    { label: 'New / Deal Created',   count: sc.deal_created,       color: '#3b82f6' },
-    { label: 'DC Stage',             count: sc.dc_completed + sc.dc_no_show, color: '#7c3aed' },
-    { label: 'AC Stage',             count: sc.ac_completed + sc.ac_no_show, color: '#00d4ff' },
-    { label: 'Hiring & Recruiting',  count: sc.hiring_recruiting,  color: '#00e676' },
-    { label: 'Other Active',         count: sc.other_active,       color: '#64748b' },
-    { label: 'Closed Won',           count: sc.closed_won,         color: '#22c55e' },
-    { label: 'Closed Lost',          count: sc.closed_lost,        color: '#ef4444' },
+  /* funnel */
+  var stages=[
+    {l:'New / Deal Created',n:SC.dealCreated,c:'#3b82f6'},
+    {l:'DC Stage',n:SC.dcCompleted+SC.dcNoShow,c:'#a855f7'},
+    {l:'AC Stage',n:SC.acCompleted+SC.acNoShow,c:'#00d4ff'},
+    {l:'Hiring & Recruiting',n:SC.hiringRecruiting,c:'#00e676'},
+    {l:'Other Active',n:SC.otherActive,c:'#64748b'},
+    {l:'Closed Won',n:SC.closedWon,c:'#22c55e'},
+    {l:'Closed Lost',n:SC.closedLost,c:'#ef4444'}
   ];
-  const maxCount = Math.max(...stages.map(s => s.count));
-  const wrap = document.getElementById('funnelWrap');
-  wrap.innerHTML = stages.map(s => {
-    const pct = ((s.count / total) * 100).toFixed(1);
-    const barW = (s.count / maxCount * 100).toFixed(1);
-    return `<div class="funnel-stage">
-      <div class="funnel-label">${s.label}</div>
-      <div class="funnel-bar-wrap">
-        <div class="funnel-bar" style="background:${s.color}22; border-left:3px solid ${s.color}; width:${barW}%">
-          <span class="funnel-pct" style="color:${s.color}">${pct}%</span>
-        </div>
-        <span class="funnel-count">${s.count.toLocaleString()}</span>
-      </div>
-    </div>`;
+  var mx=Math.max.apply(null,stages.map(function(s){return s.n}));
+  var ttl=D.pipeline.total;
+  document.getElementById('funnel').innerHTML=stages.map(function(s){
+    var bw=(s.n/mx*100).toFixed(1), pct=((s.n/ttl)*100).toFixed(1);
+    return '<div class="fs"><div class="fl">'+s.l+'</div><div class="fb"><div class="fb-inner" style="background:'+s.c+'22;border-left:3px solid '+s.c+';width:'+bw+'%"><span class="fb-pct" style="color:'+s.c+'">'+pct+'%</span></div><span class="fb-n">'+s.n.toLocaleString()+'</span></div></div>';
   }).join('');
-}
 
-function renderTopDeals(d) {
-  const deals = [...d.top_deals];
-  const scored = deals.map(deal => ({ ...deal, score: scoreDeal(deal) }))
-    .sort((a,b) => b.score - a.score || daysSince(a.last_activity) - daysSince(b.last_activity))
+  /* top 20 deals */
+  var scored=D.deals.map(function(d){return Object.assign({},d,{score:score(d)})})
+    .sort(function(a,b){return b.score-a.score||daysSince(a.lastActivity)-daysSince(b.lastActivity)})
     .slice(0,20);
-
-  const tbody = document.getElementById('topDealsBody');
-  if (!scored.length) {
-    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:20px">No deals available</td></tr>';
-    return;
-  }
-
-  tbody.innerHTML = scored.map((deal, i) => {
-    const rank = i + 1;
-    const [labelClass, labelText] = getLabel(deal.score);
-    const [actionColor, actionBg, actionText] = getAction(deal, deal.score);
-    const scoreColor = deal.score >= 65 ? '#ff4757' : deal.score >= 35 ? '#ffa502' : '#00d4ff';
-    const stageC = stageColor(deal.stage_id);
-    const hsUrl = `https://app.hubspot.com/contacts/44390857/record/0-3/${deal.id}?utm_source=bd_dashboard&utm_medium=scorecard`;
-
-    return `<tr>
-      <td><div class="rank-num ${rank<=3?'rank-'+rank:''}">${rank}</div></td>
-      <td>
-        <a href="${hsUrl}" target="_blank" style="text-decoration:none">
-          <div class="deal-name">${deal.name}</div>
-        </a>
-        ${deal.paid_recruitment_date ? `<span style="font-size:10px;color:var(--green)">✓ Paid ${deal.paid_recruitment_date}</span>` : ''}
-      </td>
-      <td>
-        <span class="stage-pill" style="background:${stageC}22;color:${stageC}">${deal.stage_label}</span>
-      </td>
-      <td style="white-space:nowrap">
-        <span class="score-val" style="color:${scoreColor}">${deal.score}</span>
-        <div class="score-bar-wrap">
-          <div class="score-bar" style="width:${deal.score}%;background:${scoreColor}"></div>
-        </div>
-      </td>
-      <td style="${activityClass(deal.last_activity)}">${formatDate(deal.last_activity)}</td>
-      <td><span class="label label-${labelClass}">${labelText.split(' – ')[0]}</span></td>
-      <td><span class="action-pill" style="background:${actionBg};color:${actionColor}">${actionText}</span></td>
-    </tr>`;
+  document.getElementById('tBody').innerHTML=scored.map(function(d,i){
+    var r=i+1, sc=d.score, lbl=label(sc), act=action(d,sc);
+    var sc_clr=sc>=65?'#ff4757':sc>=35?'#ffa502':'#00d4ff';
+    var stC=stageClr(d.stageId);
+    var url='https://app.hubspot.com/contacts/44390857/record/0-3/'+d.id+'?utm_source=bd_dashboard';
+    return '<tr>'
+      +'<td><div class="rk'+(r<=3?' rk'+r:'')+'">'+r+'</div></td>'
+      +'<td><a href="'+url+'" target="_blank" style="text-decoration:none"><div class="dn">'+d.name+'</div></a>'+(d.paid?'<span style="font-size:10px;color:var(--green)">✓ Paid '+d.paid+'</span>':'')+'</td>'
+      +'<td><span class="sb" style="background:'+stC+'22;color:'+stC+'">'+d.stage+'</span></td>'
+      +'<td style="white-space:nowrap"><span class="sv" style="color:'+sc_clr+'">'+sc+'</span><div class="sb-wrap"><div class="sb-fill" style="width:'+sc+'%;background:'+sc_clr+'"></div></div></td>'
+      +'<td style="'+actClr(d.lastActivity)+'">'+fmtDate(d.lastActivity)+'</td>'
+      +'<td><span class="lbl '+lbl[0]+'">'+lbl[1]+'</span></td>'
+      +'<td><span class="act" style="background:'+act[1]+';color:'+act[0]+'">'+act[2]+'</span></td>'
+      +'</tr>';
   }).join('');
+
+  /* charts */
+  mkChart('cWk',{type:'bar',data:{labels:['2 Wks Ago','Last Wk','This Wk'],datasets:[
+    {label:'Deals Created',data:[W.trend[1],W.trend[2],W.trend[3]],backgroundColor:'#00d4ff55',borderColor:'#00d4ff',borderWidth:1,borderRadius:4},
+    {label:'Paid',data:[0,W.prevPaid,W.paidDeals],backgroundColor:'#00e67655',borderColor:'#00e676',borderWidth:1,borderRadius:4}
+  ]},options:Object.assign({},cOpts,{plugins:{legend:{labels:{color:'#64748b',font:{size:10}}}}})});
+
+  mkChart('cMo',{type:'bar',data:{labels:[M.prevLabel,M.label],datasets:[
+    {label:'Deals Created',data:[M.prevDeals,M.dealsCreated],backgroundColor:'#00d4ff55',borderColor:'#00d4ff',borderWidth:1,borderRadius:4},
+    {label:'Paid',data:[M.prevPaid,M.paidDeals],backgroundColor:'#00e67655',borderColor:'#00e676',borderWidth:1,borderRadius:4}
+  ]},options:cOpts});
+
+  mkChart('cAtt',{type:'bar',data:{labels:['Discovery Call','Alignment Call'],datasets:[
+    {label:'Attended',data:[A.dcAttended,A.acAttended],backgroundColor:['#7c3aed','#0099bb'],borderRadius:4},
+    {label:'No-Show',data:[A.dcNoShow,A.acNoShow],backgroundColor:['#4a1d80','#004d66'],borderRadius:4}
+  ]},options:Object.assign({},cOpts,{scales:{x:{stacked:true,grid:{color:'#1e2d42'},ticks:{color:'#64748b'}},y:{stacked:true,grid:{color:'#1e2d42'},ticks:{color:'#64748b'}}}})});
+
+  mkChart('cConv',{type:'bar',data:{labels:['Total','DC Attended','AC Attended','Paid'],datasets:[{data:[t,dc,ac,p],backgroundColor:['#1e2d42','#7c3aed','#0099bb','#00e676'],borderRadius:6}]},options:Object.assign({},cOpts,{indexAxis:'y',plugins:{legend:{display:false}}})});
+
+  mkChart('cStage',{type:'doughnut',data:{labels:['New','DC Attended','DC No-Show','AC Attended','AC No-Show','Hiring','Won','Lost','Other'],datasets:[{data:[SC.dealCreated,SC.dcCompleted,SC.dcNoShow,SC.acCompleted,SC.acNoShow,SC.hiringRecruiting,SC.closedWon,SC.closedLost,SC.otherActive],backgroundColor:['#3b82f6','#7c3aed','#ff4444','#00d4ff','#ff9800','#00e676','#22c55e','#ef4444','#475569'],borderColor:'#111827',borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,cutout:'58%',plugins:{legend:{position:'right',labels:{color:'#64748b',font:{size:10},padding:7,boxWidth:9}}}}});
+
+  mkChart('cTrend',{type:'line',data:{labels:['Wk Apr 7-8','Wk Apr 14-15','Wk Apr 21-22','Wk Apr 28-29'],datasets:[
+    {label:'Deals Created',data:W.trend,borderColor:'#00d4ff',backgroundColor:'#00d4ff15',tension:.4,fill:true,pointRadius:4,pointBackgroundColor:'#00d4ff'},
+    {label:'Paid Deals',data:[0,0,W.prevPaid,W.paidDeals],borderColor:'#00e676',backgroundColor:'#00e67615',tension:.4,fill:true,pointRadius:4,pointBackgroundColor:'#00e676'}
+  ]},options:Object.assign({},cOpts,{plugins:{legend:{labels:{color:'#64748b',font:{size:11}}}}})});
 }
 
+function setText(id,val){var e=document.getElementById(id);if(e)e.textContent=val}
 
-function renderCharts(d) {
-  const sc = d.stage_counts;
-
-  // Stage Distribution Doughnut
-  destroyChart('stageDistChart');
-  const sdCtx = document.getElementById('stageDistChart').getContext('2d');
-  charts['stageDistChart'] = new Chart(sdCtx, {
-    type: 'doughnut',
-    data: {
-      labels: ['New','DC Attended','DC No-Show','AC Attended','AC No-Show','Hiring','Won','Lost','Other Active'],
-      datasets: [{
-        data: [sc.deal_created, sc.dc_completed, sc.dc_no_show, sc.ac_completed, sc.ac_no_show, sc.hiring_recruiting, sc.closed_won, sc.closed_lost, sc.other_active],
-        backgroundColor: ['#3b82f6','#7c3aed','#ff4444','#00d4ff','#ff9800','#00e676','#22c55e','#ef4444','#475569'],
-        borderColor: '#111827',
-        borderWidth: 2,
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      cutout: '60%',
-      plugins: {
-        legend: { position: 'right', labels: { color: '#64748b', font: { size: 10 }, padding: 8, boxWidth: 10 } }
-      }
-    }
-  });
-
-  // Trend Chart
-  destroyChart('trendChart');
-  const tCtx = document.getElementById('trendChart').getContext('2d');
-  charts['trendChart'] = new Chart(tCtx, {
-    type: 'line',
-    data: {
-      labels: ['Wk Apr 7-8','Wk Apr 14-15','Wk Apr 21-22','Wk Apr 28-29'],
-      datasets: [
-        {
-          label: 'Deals Created',
-          data: [2, 2, 1, d.weekly.deals_created],
-          borderColor: '#00d4ff', backgroundColor: '#00d4ff15',
-          tension: 0.4, fill: true, pointRadius: 4, pointBackgroundColor: '#00d4ff'
-        },
-        {
-          label: 'Paid Deals',
-          data: [0, 0, d.weekly.prev_paid_deals, d.weekly.paid_deals],
-          borderColor: '#00e676', backgroundColor: '#00e67615',
-          tension: 0.4, fill: true, pointRadius: 4, pointBackgroundColor: '#00e676'
-        }
-      ]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { labels: { color: '#64748b', font: { size: 11 } } } },
-      scales: {
-        x: { grid: { color: '#1e2d42' }, ticks: { color: '#64748b', font: { size: 10 } } },
-        y: { grid: { color: '#1e2d42' }, ticks: { color: '#64748b', beginAtZero: true, stepSize: 1 } }
-      }
-    }
-  });
+/* ── TABS ── */
+function tab(grp,name,el){
+  document.querySelectorAll('[id^="'+grp+'-"]').forEach(function(t){t.classList.remove('on')});
+  el.closest('.tabs').querySelectorAll('.tab').forEach(function(t){t.classList.remove('on')});
+  el.classList.add('on');
+  document.getElementById(grp+'-'+name).classList.add('on');
 }
 
-// ══════════════════════════════════════════════
-//  TAB SWITCHING
-// ══════════════════════════════════════════════
-function switchTab(group, tab, el) {
-  document.querySelectorAll(`[id^="${group}-"]`).forEach(t => t.classList.remove('active'));
-  document.querySelectorAll(`[id^="${group}-"]`).forEach(t => {
-    document.getElementById(`${group}-${t.id.split('-')[1]}`);
-  });
-  document.querySelectorAll('.tab').forEach(t => {
-    if (t.closest('.tab-bar') === el.closest('.tab-bar')) t.classList.remove('active');
-  });
-  el.classList.add('active');
-  document.getElementById(`${group}-${tab}`).classList.add('active');
-}
-
-// ══════════════════════════════════════════════
-//  INIT — fetch data.json, fall back to inline
-// ══════════════════════════════════════════════
-const INLINE_DATA = {"generated_at":"2026-05-01T09:00:00+08:00","pipeline":{"id":"68218158","name":"OA Biz Dev Qualified Leads","total":1324},"stage_counts":{"deal_created":4,"dc_completed":146,"dc_no_show":229,"ac_completed":83,"ac_no_show":110,"hiring_recruiting":39,"closed_won":58,"closed_lost":415,"other_active":240},"attendance":{"dc_attended":146,"dc_no_show":229,"dc_scheduled_total":375,"dc_rate_pct":38.9,"ac_attended":83,"ac_no_show":110,"ac_scheduled_total":193,"ac_rate_pct":43.0},"monthly":{"label":"May 2026","deals_created":0,"paid_deals":0,"prev_month_label":"April 2026","prev_deals_created":10,"prev_paid_deals":2},"weekly":{"label":"Apr 28 – 29","deals_created":0,"paid_deals":1,"prev_week_label":"Apr 21 – 22","prev_deals_created":1,"prev_paid_deals":0},"paid_total":114,"conversion":{"total_to_dc_attended_pct":11.0,"dc_to_ac_pct":56.8,"overall_to_paid_pct":8.6},"top_deals":[{"id":"51244763755","name":"LMTD - Creative Roles 3 HCs","stage_id":"133348729","stage_label":"Hiring & Recruiting","paid_recruitment_date":"2026-01-29","last_activity":"2026-04-30T16:13:19Z","has_notes":true,"hs_is_closed_lost":false,"amount":600},{"id":"59609927595","name":"Cubex (UK) Ltd - Commercial Manager","stage_id":"133348729","stage_label":"Hiring & Recruiting","paid_recruitment_date":"2026-04-28","last_activity":"2026-04-30T15:55:02Z","has_notes":true,"hs_is_closed_lost":true,"amount":600},{"id":"58479464845","name":"GavBiz - Business Dev Manager","stage_id":"133348729","stage_label":"Hiring & Recruiting","paid_recruitment_date":"2026-04-17","last_activity":"2026-04-17T12:23:28Z","has_notes":true,"hs_is_closed_lost":false,"amount":600},{"id":"51268777592","name":"Webarc - 2 FT Sales Representative","stage_id":"133348729","stage_label":"Hiring & Recruiting","paid_recruitment_date":"2025-12-24","last_activity":"2026-03-04T18:53:27Z","has_notes":true,"hs_is_closed_lost":false,"amount":700},{"id":"39062092865","name":"Purple Moon Designs","stage_id":"133348729","stage_label":"Hiring & Recruiting","paid_recruitment_date":"2025-07-04","last_activity":"2026-03-05T17:32:34Z","has_notes":true,"hs_is_closed_lost":false,"amount":350},{"id":"57141064490","name":"SolCo - Tech Support","stage_id":"133348729","stage_label":"Hiring & Recruiting","paid_recruitment_date":"2026-03-20","last_activity":"2026-03-23T13:04:37Z","has_notes":true,"hs_is_closed_lost":false,"amount":600},{"id":"56279873975","name":"C3 Ingenuity - Multiple Roles","stage_id":"133348729","stage_label":"Hiring & Recruiting","paid_recruitment_date":"2026-03-20","last_activity":"2026-03-23T21:24:31Z","has_notes":true,"hs_is_closed_lost":false,"amount":600},{"id":"55815121924","name":"TSG - Sr. Accountant","stage_id":"133348729","stage_label":"Hiring & Recruiting","paid_recruitment_date":"2026-02-28","last_activity":"2026-03-03T18:19:34Z","has_notes":true,"hs_is_closed_lost":false,"amount":600},{"id":"38114201458","name":"Optima Energy - Full Time Data Analyst","stage_id":"132946334","stage_label":"Closed Won","paid_recruitment_date":"2025-07-31","last_activity":"2026-02-18T09:26:20Z","has_notes":true,"hs_is_closed_lost":false,"amount":600},{"id":"55636973160","name":"EARLY PR - Admin Assistant & PR Account Manager","stage_id":"133348729","stage_label":"Hiring & Recruiting","paid_recruitment_date":"2026-02-07","last_activity":"2026-02-07T00:16:24Z","has_notes":true,"hs_is_closed_lost":false,"amount":600},{"id":"54347203933","name":"Book Outlet International AB - CSR","stage_id":"133348729","stage_label":"Hiring & Recruiting","paid_recruitment_date":"2026-01-30","last_activity":"2026-01-30T12:41:53Z","has_notes":true,"hs_is_closed_lost":false,"amount":600},{"id":"48978124947","name":"P&D Painting CT - Marketing & Sales Agents","stage_id":"133348729","stage_label":"Hiring & Recruiting","paid_recruitment_date":"2025-11-13","last_activity":"2025-11-14T00:44:26Z","has_notes":true,"hs_is_closed_lost":false,"amount":1800},{"id":"43896830553","name":"Gulf Coast Infrared - BD & Marketing Specialist","stage_id":"133348729","stage_label":"Hiring & Recruiting","paid_recruitment_date":"2025-10-08","last_activity":"2025-10-08T13:43:55Z","has_notes":true,"hs_is_closed_lost":false,"amount":600},{"id":"28531368813","name":"KitBrix - Amazon Platform Manager","stage_id":"133348729","stage_label":"Hiring & Recruiting","paid_recruitment_date":"2024-12-11","last_activity":"2025-06-17T18:32:06Z","has_notes":true,"hs_is_closed_lost":false,"amount":600},{"id":"59225122378","name":"Blue Feather Designs - CAD Specialist","stage_id":"133348729","stage_label":"Hiring & Recruiting","paid_recruitment_date":null,"last_activity":"2026-04-23T13:39:23Z","has_notes":true,"hs_is_closed_lost":true,"amount":600},{"id":"58369075975","name":"Lunds - Data Analyst for Quote Patterns","stage_id":"132946333","stage_label":"AC Completed","paid_recruitment_date":null,"last_activity":"2026-04-13T14:45:39Z","has_notes":true,"hs_is_closed_lost":false,"amount":600},{"id":"59419271087","name":"DC Center LLC - Cold Callers","stage_id":"222405237","stage_label":"DC Completed","paid_recruitment_date":null,"last_activity":"2026-04-30T16:32:59Z","has_notes":false,"hs_is_closed_lost":false,"amount":600},{"id":"58369075827","name":"Functional Skills UK - QA & Course Designer","stage_id":"133003872","stage_label":"AC No Show","paid_recruitment_date":null,"last_activity":"2026-04-28T12:12:34Z","has_notes":true,"hs_is_closed_lost":false,"amount":600},{"id":"58986961740","name":"EPM Engineering - IT AI Automation","stage_id":"132946331","stage_label":"DC No Show","paid_recruitment_date":null,"last_activity":"2026-04-29T16:45:55Z","has_notes":true,"hs_is_closed_lost":false,"amount":600},{"id":"59610016848","name":"PixelAscend - Sales Closer","stage_id":"132946331","stage_label":"DC No Show","paid_recruitment_date":null,"last_activity":"2026-04-27T14:01:22Z","has_notes":true,"hs_is_closed_lost":false,"amount":600},{"id":"59503420011","name":"Vista Film - Sales Rep & Lead Generation","stage_id":"132946331","stage_label":"DC No Show","paid_recruitment_date":null,"last_activity":"2026-04-27T13:15:40Z","has_notes":true,"hs_is_closed_lost":false,"amount":600},{"id":"59158330175","name":"Keith Millard - Customer Support","stage_id":"132946331","stage_label":"DC No Show","paid_recruitment_date":null,"last_activity":"2026-04-20T07:37:10Z","has_notes":true,"hs_is_closed_lost":false,"amount":600},{"id":"59180966457","name":"V4 Consumer - Outbound Sales","stage_id":"991351894","stage_label":"Deal Unqualified","paid_recruitment_date":null,"last_activity":"2026-04-28T16:54:40Z","has_notes":false,"hs_is_closed_lost":false,"amount":600},{"id":"58798212655","name":"Koita Exports Inc - Accountant","stage_id":"133348729","stage_label":"Hiring & Recruiting","paid_recruitment_date":null,"last_activity":"2026-04-17T14:08:21Z","has_notes":false,"hs_is_closed_lost":true,"amount":600},{"id":"51831982161","name":"IR Chiropractic - 2 VA","stage_id":"133348729","stage_label":"Hiring & Recruiting","paid_recruitment_date":"2026-01-09","last_activity":"2026-01-16T10:24:41Z","has_notes":true,"hs_is_closed_lost":false,"amount":600}]};
-
-fetch('./data.json?_=' + Date.now())
-  .then(r => r.ok ? r.json() : Promise.reject())
-  .then(data => initDashboard(data))
-  .catch(() => initDashboard(INLINE_DATA));
+document.addEventListener('DOMContentLoaded',init);
 </script>
-
 </body>
 </html>
