@@ -551,7 +551,7 @@ function init(){
   document.getElementById('att-wk-tbl').innerHTML='<thead><tr><th>Week</th><th>DC Att</th><th>DC NS</th><th>DC Rate</th><th>AC Att</th><th>AC NS</th><th>AC Rate</th></tr></thead><tbody>'+
     AT.weekly.map(function(w,i,a){
       var dt=i>0?(w.dcRate>a[i-1].dcRate?'<span class="up"> ▲</span>':w.dcRate<a[i-1].dcRate?'<span class="down"> ▼</span>':''):'';
-      var at=i>0?(w.acRate>a[i-1].acRate?'<span class="up"> ▲</span>':w.acRate<a[i-1].acRate?'<span class="down"> ▼</span>':''):'';
+      var at=i>0&&w.acRate!==null&&a[i-1].acRate!==null?(w.acRate>a[i-1].acRate?'<span class="up"> ▲</span>':w.acRate<a[i-1].acRate?'<span class="down"> ▼</span>':''):'';
       var acDisp=w.acRate===null?'<span style="color:var(--muted)">N/A</span>':'<b style="color:#00d4ff">'+w.acRate.toFixed(1)+'%</b>'+at;
       return '<tr><td>'+w.label+'</td><td style="color:var(--green)">'+w.dcAtt+'</td><td style="color:var(--red)">'+w.dcNS+'</td><td><b style="color:#a855f7">'+w.dcRate.toFixed(1)+'%</b>'+dt+'</td><td style="color:var(--green)">'+w.acAtt+'</td><td style="color:var(--red)">'+w.acNS+'</td><td>'+acDisp+'</td></tr>';
     }).join('')+'</tbody>';
