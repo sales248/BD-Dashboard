@@ -332,14 +332,14 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
   "paidTotal": 114,
   "attendanceTrend": {
     "weekly": [
-      {"label":"Apr 1–7",  "dcAtt":12,"dcNS":12,"dcRate":50.0,"acAtt":9, "acNS":5,"acRate":64.3},
-      {"label":"Apr 8–14", "dcAtt":10,"dcNS":11,"dcRate":47.6,"acAtt":2, "acNS":1,"acRate":66.7},
-      {"label":"Apr 15–21","dcAtt":13,"dcNS":4, "dcRate":76.5,"acAtt":3, "acNS":1,"acRate":75.0},
-      {"label":"Apr 22–28","dcAtt":15,"dcNS":14,"dcRate":51.7,"acAtt":3, "acNS":6,"acRate":33.3}
+      {"label":"Apr 1–7",  "dcAtt":1, "dcNS":3,"dcRate":25.0, "acAtt":0,"acNS":2,"acRate":0.0},
+      {"label":"Apr 8–14", "dcAtt":2, "dcNS":1,"dcRate":66.7, "acAtt":1,"acNS":1,"acRate":50.0},
+      {"label":"Apr 15–21","dcAtt":3, "dcNS":0,"dcRate":100.0,"acAtt":0,"acNS":1,"acRate":0.0},
+      {"label":"Apr 22–28","dcAtt":1, "dcNS":3,"dcRate":25.0, "acAtt":0,"acNS":0,"acRate":null}
     ],
     "monthly": [
-      {"label":"March 2026","dcAtt":43,"dcNS":20,"dcRate":68.3,"acAtt":11,"acNS":7, "acRate":61.1},
-      {"label":"April 2026","dcAtt":53,"dcNS":44,"dcRate":54.6,"acAtt":26,"acNS":15,"acRate":63.4}
+      {"label":"March 2026","dcAtt":20,"dcNS":14,"dcRate":58.8,"acAtt":2,"acNS":4,"acRate":33.3},
+      {"label":"April 2026","dcAtt":7, "dcNS":7, "dcRate":50.0,"acAtt":1,"acNS":4,"acRate":20.0}
     ]
   },
   "deals": [
@@ -552,7 +552,8 @@ function init(){
     AT.weekly.map(function(w,i,a){
       var dt=i>0?(w.dcRate>a[i-1].dcRate?'<span class="up"> ▲</span>':w.dcRate<a[i-1].dcRate?'<span class="down"> ▼</span>':''):'';
       var at=i>0?(w.acRate>a[i-1].acRate?'<span class="up"> ▲</span>':w.acRate<a[i-1].acRate?'<span class="down"> ▼</span>':''):'';
-      return '<tr><td>'+w.label+'</td><td style="color:var(--green)">'+w.dcAtt+'</td><td style="color:var(--red)">'+w.dcNS+'</td><td><b style="color:#a855f7">'+w.dcRate.toFixed(1)+'%</b>'+dt+'</td><td style="color:var(--green)">'+w.acAtt+'</td><td style="color:var(--red)">'+w.acNS+'</td><td><b style="color:#00d4ff">'+w.acRate.toFixed(1)+'%</b>'+at+'</td></tr>';
+      var acDisp=w.acRate===null?'<span style="color:var(--muted)">N/A</span>':'<b style="color:#00d4ff">'+w.acRate.toFixed(1)+'%</b>'+at;
+      return '<tr><td>'+w.label+'</td><td style="color:var(--green)">'+w.dcAtt+'</td><td style="color:var(--red)">'+w.dcNS+'</td><td><b style="color:#a855f7">'+w.dcRate.toFixed(1)+'%</b>'+dt+'</td><td style="color:var(--green)">'+w.acAtt+'</td><td style="color:var(--red)">'+w.acNS+'</td><td>'+acDisp+'</td></tr>';
     }).join('')+'</tbody>';
   mkChart('cAttMoTrend',{type:'bar',data:{labels:AT.monthly.map(function(m){return m.label}),datasets:[
     {label:'DC Rate %',data:AT.monthly.map(function(m){return m.dcRate}),backgroundColor:'#a855f755',borderColor:'#a855f7',borderWidth:2,borderRadius:6},
