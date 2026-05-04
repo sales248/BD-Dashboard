@@ -333,16 +333,16 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
   "paidTotal": 114,
   "attendanceTrend": {
     "weekly": [
-      {"label":"Apr 1–7",  "dcAtt":1, "dcNS":3,"dcRate":25.0, "acAtt":0,"acNS":2,"acRate":0.0},
-      {"label":"Apr 8–14", "dcAtt":2, "dcNS":1,"dcRate":66.7, "acAtt":1,"acNS":1,"acRate":50.0},
-      {"label":"Apr 15–21","dcAtt":3, "dcNS":0,"dcRate":100.0,"acAtt":0,"acNS":1,"acRate":0.0},
-      {"label":"Apr 22–28","dcAtt":1, "dcNS":3,"dcRate":25.0, "acAtt":0,"acNS":0,"acRate":null}
+      {"label":"Apr 1–7",  "dcTotal":4,"acTotal":3,"paid":0,"dcAtt":1,"dcNS":3,"dcRate":25.0, "acAtt":0,"acNS":2,"acRate":0.0},
+      {"label":"Apr 8–14", "dcTotal":4,"acTotal":2,"paid":0,"dcAtt":2,"dcNS":1,"dcRate":66.7, "acAtt":1,"acNS":1,"acRate":50.0},
+      {"label":"Apr 15–21","dcTotal":4,"acTotal":1,"paid":1,"dcAtt":3,"dcNS":0,"dcRate":100.0,"acAtt":0,"acNS":1,"acRate":0.0},
+      {"label":"Apr 22–28","dcTotal":4,"acTotal":0,"paid":1,"dcAtt":1,"dcNS":3,"dcRate":25.0, "acAtt":0,"acNS":0,"acRate":null}
     ],
     "monthly": [
-      {"label":"Jan 2026", "dcTotal":46,"dcAtt":28,"dcNS":9, "dcRate":75.7,"acAtt":6,"acNS":5,"acRate":54.5},
-      {"label":"Feb 2026", "dcTotal":39,"dcAtt":10,"dcNS":17,"dcRate":37.0,"acAtt":3,"acNS":5,"acRate":37.5},
-      {"label":"Mar 2026", "dcTotal":39,"dcAtt":20,"dcNS":14,"dcRate":58.8,"acAtt":2,"acNS":4,"acRate":33.3},
-      {"label":"Apr 2026", "dcTotal":16,"dcAtt":7, "dcNS":7, "dcRate":50.0,"acAtt":1,"acNS":4,"acRate":20.0}
+      {"label":"Jan 2026", "dcTotal":46,"acTotal":12,"paid":4,"dcAtt":28,"dcNS":9, "dcRate":75.7,"acAtt":6,"acNS":5,"acRate":54.5},
+      {"label":"Feb 2026", "dcTotal":39,"acTotal":9, "paid":2,"dcAtt":10,"dcNS":17,"dcRate":37.0,"acAtt":3,"acNS":5,"acRate":37.5},
+      {"label":"Mar 2026", "dcTotal":39,"acTotal":6, "paid":2,"dcAtt":20,"dcNS":14,"dcRate":58.8,"acAtt":2,"acNS":4,"acRate":33.3},
+      {"label":"Apr 2026", "dcTotal":16,"acTotal":6, "paid":2,"dcAtt":7, "dcNS":7, "dcRate":50.0,"acAtt":1,"acNS":4,"acRate":20.0}
     ]
   },
   "deals": [
@@ -556,27 +556,35 @@ function init(){
   /* attendance trend charts */
   var AT=D.attendanceTrend;
   var attOpts=Object.assign({},cOpts,{scales:{x:{grid:{color:'#1e2d42'},ticks:{color:'#64748b',font:{size:10}}},y:{grid:{color:'#1e2d42'},ticks:{color:'#64748b',font:{size:10},callback:function(v){return v+'%'}},min:0,max:100}}});
+  var wkVolumeOpts=Object.assign({},attOpts,{scales:Object.assign({},attOpts.scales,{y2:{position:'right',grid:{display:false},ticks:{color:'#64748b',font:{size:10}},title:{display:true,text:'Volume',color:'#64748b',font:{size:10}},beginAtZero:true}})});
   mkChart('cAttWkTrend',{type:'line',data:{labels:AT.weekly.map(function(w){return w.label}),datasets:[
     {label:'DC Rate %',data:AT.weekly.map(function(w){return w.dcRate}),borderColor:'#a855f7',backgroundColor:'#a855f715',tension:.4,fill:true,pointRadius:5,pointBackgroundColor:'#a855f7'},
-    {label:'AC Rate %',data:AT.weekly.map(function(w){return w.acRate}),borderColor:'#00d4ff',backgroundColor:'#00d4ff15',tension:.4,fill:true,pointRadius:5,pointBackgroundColor:'#00d4ff'}
-  ]},options:attOpts});
-  document.getElementById('att-wk-tbl').innerHTML='<thead><tr><th>Week</th><th>DC Att</th><th>DC NS</th><th>DC Rate</th><th>AC Att</th><th>AC NS</th><th>AC Rate</th></tr></thead><tbody>'+
+    {label:'AC Rate %',data:AT.weekly.map(function(w){return w.acRate}),borderColor:'#00d4ff',backgroundColor:'#00d4ff15',tension:.4,fill:true,pointRadius:5,pointBackgroundColor:'#00d4ff'},
+    {label:'DC Sched',data:AT.weekly.map(function(w){return w.dcTotal||0}),borderColor:'#ffc107',backgroundColor:'transparent',borderWidth:2,borderDash:[4,3],pointRadius:4,pointBackgroundColor:'#ffc107',tension:.3,yAxisID:'y2'},
+    {label:'AC Sched',data:AT.weekly.map(function(w){return w.acTotal||0}),borderColor:'#fb923c',backgroundColor:'transparent',borderWidth:2,borderDash:[2,3],pointRadius:4,pointBackgroundColor:'#fb923c',tension:.3,yAxisID:'y2'},
+    {label:'Paid Fee',data:AT.weekly.map(function(w){return w.paid||0}),borderColor:'#00e676',backgroundColor:'transparent',borderWidth:2,pointRadius:5,pointBackgroundColor:'#00e676',tension:.3,yAxisID:'y2'}
+  ]},options:wkVolumeOpts});
+  document.getElementById('att-wk-tbl').innerHTML='<thead><tr><th>Week</th><th style="color:var(--yellow)">DC Sched</th><th>DC Att</th><th>DC NS</th><th>DC Rate</th><th style="color:var(--yellow)">AC Sched</th><th>AC Att</th><th>AC NS</th><th>AC Rate</th><th style="color:var(--green)">Paid Fee</th></tr></thead><tbody>'+
     AT.weekly.map(function(w,i,a){
       var dt=i>0?(w.dcRate>a[i-1].dcRate?'<span class="up"> ▲</span>':w.dcRate<a[i-1].dcRate?'<span class="down"> ▼</span>':''):'';
       var at=i>0&&w.acRate!==null&&a[i-1].acRate!==null?(w.acRate>a[i-1].acRate?'<span class="up"> ▲</span>':w.acRate<a[i-1].acRate?'<span class="down"> ▼</span>':''):'';
       var acDisp=w.acRate===null?'<span style="color:var(--muted)">N/A</span>':'<b style="color:#00d4ff">'+w.acRate.toFixed(1)+'%</b>'+at;
-      return '<tr><td>'+w.label+'</td><td style="color:var(--green)">'+w.dcAtt+'</td><td style="color:var(--red)">'+w.dcNS+'</td><td><b style="color:#a855f7">'+w.dcRate.toFixed(1)+'%</b>'+dt+'</td><td style="color:var(--green)">'+w.acAtt+'</td><td style="color:var(--red)">'+w.acNS+'</td><td>'+acDisp+'</td></tr>';
+      var paidDisp=w.paid?'<b style="color:var(--green)">'+w.paid+'</b>':'<span style="color:var(--muted)">—</span>';
+      return '<tr><td>'+w.label+'</td><td style="color:var(--yellow);font-weight:600">'+(w.dcTotal!==undefined?w.dcTotal:'—')+'</td><td style="color:var(--green)">'+w.dcAtt+'</td><td style="color:var(--red)">'+w.dcNS+'</td><td><b style="color:#a855f7">'+w.dcRate.toFixed(1)+'%</b>'+dt+'</td><td style="color:var(--yellow);font-weight:600">'+(w.acTotal!==undefined?w.acTotal:'—')+'</td><td style="color:var(--green)">'+w.acAtt+'</td><td style="color:var(--red)">'+w.acNS+'</td><td>'+acDisp+'</td><td>'+paidDisp+'</td></tr>';
     }).join('')+'</tbody>';
   mkChart('cAttMoTrend',{type:'bar',data:{labels:AT.monthly.map(function(m){return m.label}),datasets:[
     {label:'DC Rate %',data:AT.monthly.map(function(m){return m.dcRate}),backgroundColor:'#a855f755',borderColor:'#a855f7',borderWidth:2,borderRadius:6},
     {label:'AC Rate %',data:AT.monthly.map(function(m){return m.acRate}),backgroundColor:'#00d4ff55',borderColor:'#00d4ff',borderWidth:2,borderRadius:6},
-    {label:'DC Total',data:AT.monthly.map(function(m){return m.dcTotal||0}),type:'line',borderColor:'#ffc107',backgroundColor:'transparent',borderWidth:2,borderDash:[4,3],pointRadius:5,pointBackgroundColor:'#ffc107',tension:.3,yAxisID:'y2'}
-  ]},options:Object.assign({},attOpts,{scales:Object.assign({},attOpts.scales,{y2:{position:'right',grid:{display:false},ticks:{color:'#ffc107',font:{size:10}},title:{display:true,text:'DC Total',color:'#ffc107',font:{size:10}},beginAtZero:true}})})});
-  document.getElementById('att-mo-tbl').innerHTML='<thead><tr><th>Month</th><th>DC Sched</th><th>DC Att</th><th>DC NS</th><th>DC Rate</th><th>AC Att</th><th>AC NS</th><th>AC Rate</th></tr></thead><tbody>'+
+    {label:'DC Sched',data:AT.monthly.map(function(m){return m.dcTotal||0}),type:'line',borderColor:'#ffc107',backgroundColor:'transparent',borderWidth:2,borderDash:[4,3],pointRadius:5,pointBackgroundColor:'#ffc107',tension:.3,yAxisID:'y2'},
+    {label:'AC Sched',data:AT.monthly.map(function(m){return m.acTotal||0}),type:'line',borderColor:'#fb923c',backgroundColor:'transparent',borderWidth:2,borderDash:[2,3],pointRadius:4,pointBackgroundColor:'#fb923c',tension:.3,yAxisID:'y2'},
+    {label:'Paid Fee',data:AT.monthly.map(function(m){return m.paid||0}),type:'line',borderColor:'#00e676',backgroundColor:'transparent',borderWidth:2,pointRadius:5,pointBackgroundColor:'#00e676',tension:.3,yAxisID:'y2'}
+  ]},options:Object.assign({},attOpts,{scales:Object.assign({},attOpts.scales,{y2:{position:'right',grid:{display:false},ticks:{color:'#64748b',font:{size:10}},title:{display:true,text:'Volume',color:'#64748b',font:{size:10}},beginAtZero:true}})})});
+  document.getElementById('att-mo-tbl').innerHTML='<thead><tr><th>Month</th><th style="color:var(--yellow)">DC Sched</th><th>DC Att</th><th>DC NS</th><th>DC Rate</th><th style="color:var(--yellow)">AC Sched</th><th>AC Att</th><th>AC NS</th><th>AC Rate</th><th style="color:var(--green)">Paid Fee</th></tr></thead><tbody>'+
     AT.monthly.map(function(m,i,a){
       var dt=i>0?(m.dcRate>a[i-1].dcRate?'<span class="up"> ▲</span>':m.dcRate<a[i-1].dcRate?'<span class="down"> ▼</span>':''):'';
       var at=i>0?(m.acRate>a[i-1].acRate?'<span class="up"> ▲</span>':m.acRate<a[i-1].acRate?'<span class="down"> ▼</span>':''):'';
-      return '<tr><td>'+m.label+'</td><td style="color:var(--yellow);font-weight:600">'+(m.dcTotal||'—')+'</td><td style="color:var(--green)">'+m.dcAtt+'</td><td style="color:var(--red)">'+m.dcNS+'</td><td><b style="color:#a855f7">'+m.dcRate.toFixed(1)+'%</b>'+dt+'</td><td style="color:var(--green)">'+m.acAtt+'</td><td style="color:var(--red)">'+m.acNS+'</td><td><b style="color:#00d4ff">'+m.acRate.toFixed(1)+'%</b>'+at+'</td></tr>';
+      var paidDisp=m.paid?'<b style="color:var(--green)">'+m.paid+'</b>':'<span style="color:var(--muted)">—</span>';
+      return '<tr><td>'+m.label+'</td><td style="color:var(--yellow);font-weight:600">'+(m.dcTotal||'—')+'</td><td style="color:var(--green)">'+m.dcAtt+'</td><td style="color:var(--red)">'+m.dcNS+'</td><td><b style="color:#a855f7">'+m.dcRate.toFixed(1)+'%</b>'+dt+'</td><td style="color:var(--yellow);font-weight:600">'+(m.acTotal||'—')+'</td><td style="color:var(--green)">'+m.acAtt+'</td><td style="color:var(--red)">'+m.acNS+'</td><td><b style="color:#00d4ff">'+m.acRate.toFixed(1)+'%</b>'+at+'</td><td>'+paidDisp+'</td></tr>';
     }).join('')+'</tbody>';
 }
 
