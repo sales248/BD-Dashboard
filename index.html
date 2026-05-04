@@ -339,10 +339,10 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
       {"label":"Apr 22–28","dcAtt":1, "dcNS":3,"dcRate":25.0, "acAtt":0,"acNS":0,"acRate":null}
     ],
     "monthly": [
-      {"label":"Jan 2026", "dcAtt":28,"dcNS":9, "dcRate":75.7,"acAtt":6,"acNS":5,"acRate":54.5},
-      {"label":"Feb 2026", "dcAtt":10,"dcNS":17,"dcRate":37.0,"acAtt":3,"acNS":5,"acRate":37.5},
-      {"label":"Mar 2026", "dcAtt":20,"dcNS":14,"dcRate":58.8,"acAtt":2,"acNS":4,"acRate":33.3},
-      {"label":"Apr 2026", "dcAtt":7, "dcNS":7, "dcRate":50.0,"acAtt":1,"acNS":4,"acRate":20.0}
+      {"label":"Jan 2026", "dcTotal":46,"dcAtt":28,"dcNS":9, "dcRate":75.7,"acAtt":6,"acNS":5,"acRate":54.5},
+      {"label":"Feb 2026", "dcTotal":39,"dcAtt":10,"dcNS":17,"dcRate":37.0,"acAtt":3,"acNS":5,"acRate":37.5},
+      {"label":"Mar 2026", "dcTotal":39,"dcAtt":20,"dcNS":14,"dcRate":58.8,"acAtt":2,"acNS":4,"acRate":33.3},
+      {"label":"Apr 2026", "dcTotal":16,"dcAtt":7, "dcNS":7, "dcRate":50.0,"acAtt":1,"acNS":4,"acRate":20.0}
     ]
   },
   "deals": [
@@ -569,13 +569,14 @@ function init(){
     }).join('')+'</tbody>';
   mkChart('cAttMoTrend',{type:'bar',data:{labels:AT.monthly.map(function(m){return m.label}),datasets:[
     {label:'DC Rate %',data:AT.monthly.map(function(m){return m.dcRate}),backgroundColor:'#a855f755',borderColor:'#a855f7',borderWidth:2,borderRadius:6},
-    {label:'AC Rate %',data:AT.monthly.map(function(m){return m.acRate}),backgroundColor:'#00d4ff55',borderColor:'#00d4ff',borderWidth:2,borderRadius:6}
-  ]},options:attOpts});
-  document.getElementById('att-mo-tbl').innerHTML='<thead><tr><th>Month</th><th>DC Att</th><th>DC NS</th><th>DC Rate</th><th>AC Att</th><th>AC NS</th><th>AC Rate</th></tr></thead><tbody>'+
+    {label:'AC Rate %',data:AT.monthly.map(function(m){return m.acRate}),backgroundColor:'#00d4ff55',borderColor:'#00d4ff',borderWidth:2,borderRadius:6},
+    {label:'DC Total',data:AT.monthly.map(function(m){return m.dcTotal||0}),type:'line',borderColor:'#ffc107',backgroundColor:'transparent',borderWidth:2,borderDash:[4,3],pointRadius:5,pointBackgroundColor:'#ffc107',tension:.3,yAxisID:'y2'}
+  ]},options:Object.assign({},attOpts,{scales:Object.assign({},attOpts.scales,{y2:{position:'right',grid:{display:false},ticks:{color:'#ffc107',font:{size:10}},title:{display:true,text:'DC Total',color:'#ffc107',font:{size:10}},beginAtZero:true}})})});
+  document.getElementById('att-mo-tbl').innerHTML='<thead><tr><th>Month</th><th>DC Sched</th><th>DC Att</th><th>DC NS</th><th>DC Rate</th><th>AC Att</th><th>AC NS</th><th>AC Rate</th></tr></thead><tbody>'+
     AT.monthly.map(function(m,i,a){
       var dt=i>0?(m.dcRate>a[i-1].dcRate?'<span class="up"> ▲</span>':m.dcRate<a[i-1].dcRate?'<span class="down"> ▼</span>':''):'';
       var at=i>0?(m.acRate>a[i-1].acRate?'<span class="up"> ▲</span>':m.acRate<a[i-1].acRate?'<span class="down"> ▼</span>':''):'';
-      return '<tr><td>'+m.label+'</td><td style="color:var(--green)">'+m.dcAtt+'</td><td style="color:var(--red)">'+m.dcNS+'</td><td><b style="color:#a855f7">'+m.dcRate.toFixed(1)+'%</b>'+dt+'</td><td style="color:var(--green)">'+m.acAtt+'</td><td style="color:var(--red)">'+m.acNS+'</td><td><b style="color:#00d4ff">'+m.acRate.toFixed(1)+'%</b>'+at+'</td></tr>';
+      return '<tr><td>'+m.label+'</td><td style="color:var(--yellow);font-weight:600">'+(m.dcTotal||'—')+'</td><td style="color:var(--green)">'+m.dcAtt+'</td><td style="color:var(--red)">'+m.dcNS+'</td><td><b style="color:#a855f7">'+m.dcRate.toFixed(1)+'%</b>'+dt+'</td><td style="color:var(--green)">'+m.acAtt+'</td><td style="color:var(--red)">'+m.acNS+'</td><td><b style="color:#00d4ff">'+m.acRate.toFixed(1)+'%</b>'+at+'</td></tr>';
     }).join('')+'</tbody>';
 }
 
