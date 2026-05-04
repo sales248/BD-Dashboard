@@ -207,7 +207,7 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
 <!-- ROW 1b: Attendance Rate Trends -->
 <div class="card mb">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
-    <div class="sec" style="margin-bottom:0">📉 Attendance Rate Progression</div>
+    <div class="sec" style="margin-bottom:0">📊 2026 Deals Progress — Attendance Rate Tracker</div>
     <div class="tabs" style="margin-bottom:0">
       <button class="tab on" onclick="tab('at','wk',this)">Weekly Trend</button>
       <button class="tab" onclick="tab('at','mo',this)">Monthly View</button>
@@ -227,7 +227,7 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
   <div id="at-mo" class="tc">
     <div class="g2" style="margin-bottom:0">
       <div>
-        <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">DC &amp; AC Attendance Rate (%) — Month over Month</div>
+        <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">DC &amp; AC Attendance Rate (%) — 2026 Monthly Progress</div>
         <div style="position:relative;height:195px"><canvas id="cAttMoTrend"></canvas></div>
       </div>
       <div style="overflow-x:auto">
@@ -338,8 +338,10 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
       {"label":"Apr 22–28","dcAtt":1, "dcNS":3,"dcRate":25.0, "acAtt":0,"acNS":0,"acRate":null}
     ],
     "monthly": [
-      {"label":"March 2026","dcAtt":20,"dcNS":14,"dcRate":58.8,"acAtt":2,"acNS":4,"acRate":33.3},
-      {"label":"April 2026","dcAtt":7, "dcNS":7, "dcRate":50.0,"acAtt":1,"acNS":4,"acRate":20.0}
+      {"label":"Jan 2026", "dcAtt":28,"dcNS":9, "dcRate":75.7,"acAtt":6,"acNS":5,"acRate":54.5},
+      {"label":"Feb 2026", "dcAtt":10,"dcNS":17,"dcRate":37.0,"acAtt":3,"acNS":5,"acRate":37.5},
+      {"label":"Mar 2026", "dcAtt":20,"dcNS":14,"dcRate":58.8,"acAtt":2,"acNS":4,"acRate":33.3},
+      {"label":"Apr 2026", "dcAtt":7, "dcNS":7, "dcRate":50.0,"acAtt":1,"acNS":4,"acRate":20.0}
     ]
   },
   "deals": [
